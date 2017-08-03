@@ -10,8 +10,7 @@
 
 summarizeCont <- function(df, colName, p=c(0.05, 0.95)){
   symColName <- rlang::sym(colName)
-  # colName <- rlang::enexpr(colName)
-  
+    
   tab <- rlang::quo(df %>% dplyr::summarise(
     Characteristic = colName,
     N        = sum(!is.na(!!symColName) & !!symColName!=-99),
