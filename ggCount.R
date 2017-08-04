@@ -1,3 +1,12 @@
+###################################################
+# ggCount.R
+# 
+# Author: Helena Edlund
+# Created on: 2017-08-04
+# Modified on:
+# Purpose: 
+# Dependencies: ggplot2, rlang, vcd
+###################################################
 
 countNSize <- function(x){
   return(c( y=unique(x), label=length(x)))
