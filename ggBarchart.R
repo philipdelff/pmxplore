@@ -1,4 +1,13 @@
-ggBarchart <- function(df, x, numbers=F, ...){
+###################################################
+# ggBar.R
+# 
+# Author: Helena Edlund
+# Created on: 2017-08-04
+# Modified on:
+# Purpose: 
+# Dependencies: ggplot2, rlang
+###################################################
+ggBar <- function(df, x, numbers=F, ...){
   
   x <- enexpr(x)
   
