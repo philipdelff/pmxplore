@@ -1,12 +1,4 @@
-###################################################
-# ggBoxplot.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: 
-# Dependencies: ggplot2, rlang
-###################################################
+
 ggBoxplot <- function(df, x, y, ...){
   
   x <- enexpr(x)

@@ -1,3 +1,15 @@
+
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param df PARAM_DESCRIPTION
+#' @param x PARAM_DESCRIPTION
+#' @param numbers PARAM_DESCRIPTION, Default: F
+#' @param ... PARAM_DESCRIPTION
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @export 
+#' @rdname ggBar
+#' @import rlang
 ggBar <- function(df, x, numbers=F, ...){
   
   x <- enexpr(x)
@@ -21,3 +33,4 @@ ggBar <- function(df, x, numbers=F, ...){
   }
   return(eval_tidy(p))
 }
+
