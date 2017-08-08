@@ -1,4 +1,20 @@
 
+#' create a datastructure?
+#' @description set up data from and object + specification file
+#' @param .df data frame
+#' @param dataSpec specification file, Default: 'dataSpecificationFile.csv'
+#' @param dataSpecDir PARAM_DESCRIPTION, Default: './Scripts'
+#' @param NMOutput PARAM_DESCRIPTION, Default: FALSE
+#' @description
+#' The function reads in a .csv file with the data specifications 
+#' (also accepts the same as a already loaded data frame)
+#' The data spec will be delivered with the dataset if requested through QCP order form
+#' and should include the columns: Variable, Code, DeCode, Description, R Variable Type. 
+#' The description column may be changed if a different description is preferred
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @export 
+#' @rdname rDataStructure
 rDataStructure <- function(.df, 
                            dataSpec="dataSpecificationFile.csv",
                            dataSpecDir = "./Scripts", 
