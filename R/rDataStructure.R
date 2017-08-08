@@ -1,4 +1,3 @@
-
 #' create a datastructure?
 #' @description set up data from and object + specification file
 #' @param .df data frame

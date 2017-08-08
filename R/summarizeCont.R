@@ -1,13 +1,15 @@
-###################################################
-# summarizeCont.R
-# 
-# Author: Helena Edlund
-# Created on: 2018-08-03
-# Modified on: 
-# Purpose: Summarizing continuous covariates
-# Dependencies: dplyr (>0.7), rlang
-###################################################
-
+#' @title FUNCTION_TITLE
+#' @description FUNCTION_DESCRIPTION
+#' @param df PARAM_DESCRIPTION
+#' @param colName PARAM_DESCRIPTION
+#' @param p PARAM_DESCRIPTION, Default: c(0.05, 0.95)
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @examples 
+#' @rdname summarizeCont
+#' @export 
+#' @importFrom dplyr summarise
+#' @importFrom rlang sym quo
 summarizeCont <- function(df, colName, p=c(0.05, 0.95)){
   symColName <- rlang::sym(colName)
     

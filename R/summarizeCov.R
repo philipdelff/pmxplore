@@ -1,13 +1,13 @@
-###################################################
-# summarizeCov.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-03
-# Modified on: 
-# Purpose: wrapper for summarizing list of covariates
-# Dependencies: 
-###################################################
-
+#' @title summarize covariates
+#' @description summarize covariates either of type continuous or categorical
+#' @param df data frame
+#' @param covVector vector of column names
+#' @param type continous or categorical variable, Default: 'Cont'
+#' @param ... additional details to pass to summaryFun
+#' @return summary dataframe
+#' @details DETAILS
+#' @rdname summarizeCov
+#' @export 
 summarizeCov <- function(df, covVector, type = "Cont", ...){
   
   if(type == "Cont"){
