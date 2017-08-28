@@ -1,16 +1,13 @@
 
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param df PARAM_DESCRIPTION
-#' @param x PARAM_DESCRIPTION
-#' @param numbers PARAM_DESCRIPTION, Default: F
-#' @param ... PARAM_DESCRIPTION
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+#' @title gg_bar
+#' @param df data frame
+#' @param x name of column to plot
+#' @param numbers print count, Default: F
+#' @return ggplot object
 #' @export 
-#' @rdname ggBar
+#' @rdname gg_bar
 #' @import rlang
-ggBar <- function(df, x, numbers=F, ...){
+gg_bar <- function(df, x, numbers=F){
   
   x <- enexpr(x)
   
