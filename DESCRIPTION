@@ -2,9 +2,9 @@ Package: azrdatareview
 Version: 0.1.0
 Title: summarize data based on common structures
 Description: summarize data based on common structures
-Authors@R: person(
-    "helena", "edlund", email = "helena.edlund@astrazeneca.com", role = c("aut", "cre"),
-    "devin", "pastoor", email = "devin.pastoor@gmail.com", role = c("aut"),
+Authors@R: c(
+    person("helena", "edlund", email = "helena.edlund@astrazeneca.com", role = c("aut", "cre")),
+    person("devin", "pastoor", email = "devin.pastoor@gmail.com", role = c("aut"))
     )
 Depends: R (>= 3.3.2)
 License: MIT + file license 
