@@ -5,7 +5,6 @@
 #' @param type continous or categorical variable, Default: 'Cont'
 #' @param ... additional details to pass to summaryFun
 #' @return summary dataframe
-#' @details DETAILS
 #' @rdname summarizeCov
 #' @export 
 summarizeCov <- function(df, covVector, type = "Cont", ...){
@@ -16,7 +15,6 @@ summarizeCov <- function(df, covVector, type = "Cont", ...){
   if(type == "Cat"){
     summaryFun <- summarizeCat
   }
-
   for(i in unique(covVector)) {
     tmp <- summaryFun(df, i, ...)
     if(i == covVector[1]){
