@@ -5,23 +5,24 @@
 #' @param p PARAM_DESCRIPTION, Default: c(0.05, 0.95)
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
-#' @examples 
 #' @rdname summarizeCont
 #' @export 
 #' @importFrom dplyr summarise
-#' @importFrom rlang sym quo
+#' @importFrom rlang sym quo UQ
 summarizeCont <- function(df, colName, p=c(0.05, 0.95)){
   symColName <- rlang::sym(colName)
     
   tab <- rlang::quo(df %>% dplyr::summarise(
     Characteristic = colName,
-    N        = sum(!is.na(!!symColName) & !!symColName!=-99),
-    NMissing = sum(is.na(!!symColName) | !!symColName==-99),
-    Mean     = mean(!!symColName, na.rm = T), 
-    SD       = sd(!!symColName, na.rm = T), 
-    Min      = min(!!symColName, na.rm = T),
-    Median   = quantile(!!symColName,probs =0.50, na.rm = T, names=F), 
-    Max      = max(!!symColName, na.rm = T)))
+    # !! with quosures can have trouble with parsing order
+    # so specifically use UQ
+    N        = sum(!is.na(UQ(symColName)) & !!symColName!=-99),
+    NMissing = sum(is.na(UQ(symColName)) | !!symColName==-99),
+    Mean     = mean(!!symColName, na.rm = TRUE), 
+    SD       = sd(!!symColName, na.rm = TRUE), 
+    Min      = min(!!symColName, na.rm = TRUE),
+    Median   = quantile(!!symColName, probs =0.50, na.rm = TRUE, names=FALSE), 
+    Max      = max(!!symColName, na.rm = TRUE)))
   
   tab <- eval_tidy(tab) 
   
