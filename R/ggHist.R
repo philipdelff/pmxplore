@@ -1,13 +1,10 @@
-###################################################
-# ggHist.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: 
-# Dependencies: ggplot2, rlang
-###################################################
-ggHist <- function(df, x, ...){
+#' @title histogram
+#' @param df dataframe
+#' @param x x variable
+#' @return ggplot object
+#' @rdname gg_histogram
+#' @export 
+gg_histogram <- function(df, x){
   
   x <- enexpr(x)
   
