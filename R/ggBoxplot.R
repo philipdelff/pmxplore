@@ -1,5 +1,13 @@
-
-ggBoxplot <- function(df, x, y, ...){
+#' @title boxplot
+#' @description boxplot
+#' @param df dataframe
+#' @param x x variable
+#' @param y y variable
+#' @return ggplot object
+#' @details DETAILS
+#' @export 
+#' @importFrom rlang quo
+gg_box_plot <- function(df, x, y){
   
   x <- enexpr(x)
   y <- enexpr(y)
