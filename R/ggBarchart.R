@@ -6,6 +6,7 @@
 #' @return ggplot object
 #' @export 
 #' @rdname gg_bar
+#' @import ggplot2 
 gg_bar <- function(df, x, numbers=F){
   
   x <- enexpr(x)

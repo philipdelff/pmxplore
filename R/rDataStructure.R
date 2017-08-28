@@ -13,7 +13,6 @@
 #' @return OUTPUT_DESCRIPTION
 #' @details DETAILS
 #' @export 
-#' @importFrom ggplot2 ggplot aes
 #' @rdname rDataStructure
 rDataStructure <- function(.df, 
                            dataSpec="dataSpecificationFile.csv",
