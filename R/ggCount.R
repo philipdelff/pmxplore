@@ -12,7 +12,6 @@ countNSize <- function(x){
 #' @return ggplot object
 #' @rdname gg_counts
 #' @export 
-#' @importFrom rlang quo
 gg_counts <- function(df, x, y, 
                         corThreshold=0.4, 
                         numbers=F, ...){
