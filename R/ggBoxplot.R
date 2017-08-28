@@ -4,9 +4,8 @@
 #' @param x x variable
 #' @param y y variable
 #' @return ggplot object
-#' @details DETAILS
 #' @export 
-#' @importFrom rlang quo
+#' @importFrom rlang quo enexpr expr_text
 gg_box_plot <- function(df, x, y){
   
   x <- enexpr(x)
