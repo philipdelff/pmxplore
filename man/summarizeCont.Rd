@@ -2,23 +2,14 @@
 % Please edit documentation in R/summarizeCont.R
 \name{summarizeCont}
 \alias{summarizeCont}
-\title{FUNCTION_TITLE}
+\title{summarize continuous variables}
 \usage{
 summarizeCont(df, colName, p = c(0.05, 0.95))
 }
 \arguments{
-\item{df}{PARAM_DESCRIPTION}
+\item{df}{dataframe}
 
-\item{colName}{PARAM_DESCRIPTION}
+\item{colName}{summarization column}
 
-\item{p}{PARAM_DESCRIPTION, Default: c(0.05, 0.95)}
-}
-\value{
-OUTPUT_DESCRIPTION
-}
-\description{
-FUNCTION_DESCRIPTION
-}
-\details{
-DETAILS
+\item{p}{quantiles to summarize, Default: c(0.05, 0.95)}
 }

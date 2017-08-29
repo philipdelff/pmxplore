@@ -1,10 +1,7 @@
-#' @title FUNCTION_TITLE
-#' @description FUNCTION_DESCRIPTION
-#' @param df PARAM_DESCRIPTION
-#' @param colName PARAM_DESCRIPTION
-#' @param p PARAM_DESCRIPTION, Default: c(0.05, 0.95)
-#' @return OUTPUT_DESCRIPTION
-#' @details DETAILS
+#' @title summarize continuous variables
+#' @param df dataframe
+#' @param colName summarization column
+#' @param p quantiles to summarize, Default: c(0.05, 0.95)
 #' @rdname summarizeCont
 #' @export 
 #' @importFrom dplyr summarise
