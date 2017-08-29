@@ -1,18 +1,18 @@
-###################################################
-# ggCount.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: 
-# Dependencies: ggplot2, rlang, vcd
-###################################################
-
 countNSize <- function(x){
   return(c( y=unique(x), label=length(x)))
 }
 
-ggCount <- function(df, x, y, 
+
+#' @title create a counts function
+#' @param df dataframe
+#' @param x x variable
+#' @param y y variable
+#' @param corThreshold correlation threshold, Default: 0.4
+#' @param numbers whether to provide the numbers, Default: F
+#' @return ggplot object
+#' @rdname gg_counts
+#' @export 
+gg_counts <- function(df, x, y, 
                         corThreshold=0.4, 
                         numbers=F, ...){
   x <- enexpr(x)

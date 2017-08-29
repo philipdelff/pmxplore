@@ -1,13 +1,12 @@
-###################################################
-# ggBoxplot.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: 
-# Dependencies: ggplot2, rlang
-###################################################
-ggBoxplot <- function(df, x, y, ...){
+#' @title boxplot
+#' @description boxplot
+#' @param df dataframe
+#' @param x x variable
+#' @param y y variable
+#' @return ggplot object
+#' @export 
+#' @importFrom rlang quo enexpr expr_text
+gg_box_plot <- function(df, x, y){
   
   x <- enexpr(x)
   y <- enexpr(y)

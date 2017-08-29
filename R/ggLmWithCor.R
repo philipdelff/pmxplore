@@ -1,14 +1,13 @@
-###################################################
-# ggLmWithCor.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: linear correlation with coefficient
-# Dependencies: ggplot2
-###################################################
-
-ggLmWithCor <- function(df, x, y, 
+#' @title linear regression with correlation
+#' @param df dataframe
+#' @param x x variable
+#' @param y y variable
+#' @param corThreshold correlation threshold, Default: 0.4
+#' @param corMethod correlation method, Default: 'pearson'
+#' @return ggplot object
+#' @rdname gg_lm_with_cor
+#' @export 
+gg_lm_with_cor <- function(df, x, y, 
                       corThreshold=0.4,
                       corMethod = "pearson", ...) {
   x <- enexpr(x)

@@ -1,14 +1,16 @@
-###################################################
-# ggObsVsPred.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-03
-# Modified on:
-# Purpose: GOF plot, observed vs prediction
-# Dependencies: ggplot2, rlang, dplyr
-###################################################
-
-ggObsVsPred <- function(df, y, x, 
+#' gg observation vs pred
+#' @param df data frame
+#' @param y observation variable
+#' @param x predicted variable
+#' @param grp group variable, Default: NULL
+#' @param method statistical method for central tendancy, Default: 'loess'
+#' @param labs x and y label names, passed as a list, Default: list(y = "Observed", x = "Predicted")
+#' @return ggplot object
+#' @export 
+#' @importFrom dplyr summarize
+gg_obs_vs_pred <- function(df, 
+                        y, 
+                        x, 
                         grp = NULL, 
                         method="loess", 
                         labs=list(y="Observed", x="Predicted")){

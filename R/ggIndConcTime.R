@@ -1,14 +1,16 @@
-###################################################
-# ggIndConcTime.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-03
-# Modified on: 
-# Purpose: Individual conc time plots
-# Dependencies: ggplot2, rlang
-###################################################
-
-ggIndConcTime <- function(df, obs=DV, pred=PRED, ipred=IPRED,
+#' @title create individual concentration time plot
+#' @param df dataframe
+#' @param obs name of observation column , Default: DV
+#' @param pred name of prediction column, Default: PRED
+#' @param ipred name of individual prediction column, Default: IPRED
+#' @param x name of x variable, Default: TAPD
+#' @param id name of ID column, Default: ID
+#' @param occ name of OCC column, Default: OCC
+#' @param facetRows number of rows to factet on, Default: 3
+#' @rdname ggIndConcTime
+#' @export 
+#' @importFrom rlang enexpr eval_tidy quo
+gg_ind_conc_time <- function(df, obs=DV, pred=PRED, ipred=IPRED,
                         x=TAPD, id=ID, occ=OCC,
                         facetRows=3, ...){
   

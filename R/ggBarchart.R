@@ -1,13 +1,13 @@
-###################################################
-# ggBar.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: 
-# Dependencies: ggplot2, rlang
-###################################################
-ggBar <- function(df, x, numbers=F, ...){
+
+#' @title gg_bar
+#' @param df data frame
+#' @param x name of column to plot
+#' @param numbers print count, Default: F
+#' @return ggplot object
+#' @export 
+#' @rdname gg_bar
+#' @import ggplot2 
+gg_bar <- function(df, x, numbers=F){
   
   x <- enexpr(x)
   
@@ -30,3 +30,4 @@ ggBar <- function(df, x, numbers=F, ...){
   }
   return(eval_tidy(p))
 }
+
