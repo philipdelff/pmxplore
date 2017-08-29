@@ -1,14 +1,13 @@
-###################################################
-# indDataSplit.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-08-04
-# Modified on:
-# Purpose: Generate list of dataset for individual graphs
-# Dependencies: zoo
-###################################################
-
-indDataSplit <- function(df, nPerPage=12, id="ID"){
+#' @title split dataset into sub elements
+#' @param df data frame
+#' @param nPerPage number of groups per split, Default: 12
+#' @param id PARAM_DESCRIPTION, Default: 'ID'
+#' @return OUTPUT_DESCRIPTION
+#' @details DETAILS
+#' @rdname ind_data_split
+#' @importFrom zoo na.locf
+#' @export 
+ind_data_split <- function(df, nPerPage=12, id="ID"){
   # Generates a list of dataset subsets to get nSplit plots per page
 
   # Define number of splits
