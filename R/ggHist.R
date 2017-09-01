@@ -5,7 +5,7 @@
 #' @rdname gg_histogram
 #' @export 
 gg_histogram <- function(df, x){
-  
+  # needed? (created for use with ally but did not work...)
   x <- enexpr(x)
   
   p <- rlang::quo(

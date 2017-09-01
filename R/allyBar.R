@@ -1,5 +1,5 @@
 
-#' @title ally_bar
+#' @title barchart for ggally
 #' @description barchart to be used with ggally
 #' @param data data frame 
 #' @param mapping aes passed to ggplot

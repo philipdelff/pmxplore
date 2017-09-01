@@ -1,6 +1,6 @@
 
-#' @title linear regression with correlation threshold
-#' @description scatter plot with linear regression to be used with ggally
+#' @title linear regression with correlation threshold for ggally
+#' @description scatter plot with linear regression and correlation threshold to be used with ggally
 #' @param data data frame 
 #' @param mapping aes passed to ggplot
 #' @param cor_method method for correlation estimation, Default: 'pearson'

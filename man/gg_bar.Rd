@@ -4,7 +4,7 @@
 \alias{gg_bar}
 \title{gg_bar}
 \usage{
-gg_bar(df, x, numbers = F)
+gg_bar(df, x, numbers = F, angle = 40, hjust = 1)
 }
 \arguments{
 \item{df}{data frame}
@@ -12,6 +12,10 @@ gg_bar(df, x, numbers = F)
 \item{x}{name of column to plot}
 
 \item{numbers}{print count, Default: F}
+
+\item{angle}{angle passed to theme axis.text.x, Default: 40}
+
+\item{hjust}{hjust passed to theme axis.text.x, Default: 1}
 }
 \value{
 ggplot object

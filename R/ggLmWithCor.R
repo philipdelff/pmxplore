@@ -10,6 +10,7 @@
 gg_lm_with_cor <- function(df, x, y, 
                       corThreshold=0.4,
                       corMethod = "pearson", ...) {
+  # needed?
   x <- enexpr(x)
   y <- enexpr(y)
   

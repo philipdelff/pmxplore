@@ -16,10 +16,10 @@ ind_data_split <- function(df, n_per_page=12, id="ID"){
   # Add splitting columns to dataset
   df$Splits[!duplicated(df[,id])] <-
     rep(1:n_split, each=n_per_page, length.out=n_id)
-  df$Splits <- na.locf(df$Splits)
+  df$Splits <- zoo::na.locf(df$Splits)
   
   # generate a list with nSplit datasets
-  dataSplits <- split(df, df$Splits)
+  data_splits <- split(df, df$Splits)
   
-  return(dataSplits)
+  return(data_splits)
 }

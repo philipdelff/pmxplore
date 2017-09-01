@@ -2,7 +2,7 @@
 % Please edit documentation in R/allyBox.R
 \name{ally_box}
 \alias{ally_box}
-\title{ally_box}
+\title{boxplot for ggally}
 \usage{
 ally_box(data, mapping, angle = 40, hjust = 1, x.grid = F)
 }
@@ -21,7 +21,7 @@ ally_box(data, mapping, angle = 40, hjust = 1, x.grid = F)
 ggplot object (passed to ggally)
 }
 \description{
-FUNCTION_DESCRIPTION
+boxplot to be used with ggally
 }
 \details{
 DETAILS

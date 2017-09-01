@@ -7,29 +7,36 @@
 #' @param labs x and y label names, passed as a list, Default: list(y = "Observed", x = "Predicted")
 #' @return ggplot object
 #' @export 
-#' @importFrom dplyr summarize
-gg_obs_vs_pred <- function(df, 
-                        y, 
-                        x, 
-                        grp = NULL, 
-                        method="loess", 
-                        labs=list(y="Observed", x="Predicted")){
-    x <- enexpr(x)
-    y <- enexpr(y)
-    grp <- enexpr(grp)
+#' @import ggplot2
+gg_obs_vs_pred <- function(df, y, x, blq = NULL, 
+                           smooth_method="loess"){
+  x <- enexpr(x)
+  y <- enexpr(y)
+  blq <- enexpr(blq)
   
-    # Maxvalue for axes
-    maxXY <- rlang::quo(df %>% dplyr::summarize(maxVal=max(c(!!x,!!y), na.rm=T))) %>% 
-      eval_tidy()
-    maxVal <- maxXY[1,]
-    
+  x_col <- df[[expr_text(x)]]
+  y_col <- df[[expr_text(x)]]
+  
+  # Maxvalue for axes
+  max_val <- max(c(x_col, y_col), na.rm=T)
+
+  if(is.null(expr_text(blq))){
     p <- 
       rlang::quo(ggplot(data=df, aes(x=!!x, y=!!y)) + 
                    geom_abline(slope=1, intercept=0) +  # line of identity
-                   geom_point(aes(shape=factor(BLQ))) +
-                   scale_shape_manual(values=c(1, 4)) + guides(shape="none") +
-                   geom_smooth(method=method) + 
-                   coord_cartesian(xlim=c(0, maxVal), ylim=c(0, maxVal)) +
-                   labs(y=labs[["y"]], x=labs[["x"]]))
-    return(eval_tidy(p))
+                   geom_point() +
+                   geom_smooth(method=!!smooth_method) + 
+                   coord_cartesian(xlim=c(0, !!max_val), ylim=c(0, !!max_val))
+      )
+  } else {
+    p <- 
+      rlang::quo(ggplot(data=df, aes(x=!!x, y=!!y)) + 
+                   geom_abline(slope=1, intercept=0) +  # line of identity
+                   geom_point(aes(shape=!!blq)) +
+                   guides(shape="none") +
+                   geom_smooth(method=!!smooth_method) + 
+                   coord_cartesian(xlim=c(0, !!max_val), ylim=c(0, !!max_val))
+      )
+  }
+  return(eval_tidy(p))
 }

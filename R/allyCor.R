@@ -1,12 +1,12 @@
 
-#' @title ally_cor
+#' @title correlation plot for ggally
 #' @description correlation plot to be used with ggally
 #' @param data data frame
 #' @param mapping aes passed to ggplot
 #' @param cor_method method for correlation estimation, Default: 'pearson'
 #' @param cor_use argument to cor, Default: 'pairwise.complete.obs'
 #' @param cor_threshold threshold for color switch, Default: 0.4
-#' @param cor_color colour for used at color switch, Default: 'red'
+#' @param cor_color color used at color switch, Default: 'red'
 #' @return ggplot object (passed to ggally)
 #' @seealso 
 #'  \code{\link[vcd]{assocstats}}

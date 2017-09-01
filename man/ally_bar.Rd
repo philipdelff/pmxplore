@@ -2,7 +2,7 @@
 % Please edit documentation in R/allyBar.R
 \name{ally_bar}
 \alias{ally_bar}
-\title{ally_bar}
+\title{barchart for ggally}
 \usage{
 ally_bar(data, mapping, numbers = F, angle = 40, hjust = 1)
 }

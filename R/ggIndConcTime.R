@@ -6,13 +6,14 @@
 #' @param x name of x variable, Default: TAPD
 #' @param id name of ID column, Default: ID
 #' @param occ name of OCC column, Default: OCC
-#' @param facetRows number of rows to factet on, Default: 3
+#' @param facet_rows number of rows to factet on, Default: 3
 #' @rdname ggIndConcTime
 #' @export 
 #' @importFrom rlang enexpr eval_tidy quo
+#' @import ggplot2
 gg_ind_conc_time <- function(df, obs=DV, pred=PRED, ipred=IPRED,
                         x=TAPD, id=ID, occ=OCC,
-                        facetRows=3, ...){
+                        facet_rows=3, ...){
   
   obs   <- rlang::enexpr(obs)
   pred  <- rlang::enexpr(pred)
@@ -47,7 +48,7 @@ gg_ind_conc_time <- function(df, obs=DV, pred=PRED, ipred=IPRED,
       # Rich data: individual prediction (no lines)
       geom_point(data=sparse, aes(y=!!ipred, x=!!x), shape=3, inherit.aes=F) +
       # settings
-      facet_wrap(~!!id, nrow=facetRows, labeller="label_both", scales="free_y")
+      facet_wrap(~!!id, nrow=facet_rows, labeller="label_both", scales="free_y")
   )
   return(eval_tidy(p))
 }

@@ -1,6 +1,6 @@
 
-#' @title ally_box
-#' @description FUNCTION_DESCRIPTION
+#' @title boxplot for ggally
+#' @description boxplot to be used with ggally
 #' @param data data frame
 #' @param mapping aes passed to ggplot
 #' @param angle angle passed to theme axis.text.x, Default: 40

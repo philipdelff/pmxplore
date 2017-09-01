@@ -1,4 +1,4 @@
-#' @title FUNCTION_TITLE
+#' @title Concentration vs time plots
 #' @description Conc time plots with stratification
 #' @param df data frame
 #' @param y y variable, Default: DV

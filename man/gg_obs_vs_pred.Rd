@@ -4,8 +4,7 @@
 \alias{gg_obs_vs_pred}
 \title{gg observation vs pred}
 \usage{
-gg_obs_vs_pred(df, y, x, grp = NULL, method = "loess", labs = list(y =
-  "Observed", x = "Predicted"))
+gg_obs_vs_pred(df, y, x, blq = NULL, smooth_method = "loess")
 }
 \arguments{
 \item{df}{data frame}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/allyScatterLmCor.R
 \name{ally_scatter_lm_cor}
 \alias{ally_scatter_lm_cor}
-\title{linear regression with correlation threshold}
+\title{linear regression with correlation threshold for ggally}
 \usage{
 ally_scatter_lm_cor(data, mapping, cor_method = "pearson",
   cor_use = "pearson", cor_threshold = 0.4, cor_color, ...)
@@ -26,6 +26,6 @@ ally_scatter_lm_cor(data, mapping, cor_method = "pearson",
 ggplot object (passed to ggally)
 }
 \description{
-scatter plot with linear regression to be used with ggally
+scatter plot with linear regression and correlation threshold to be used with ggally
 }
 

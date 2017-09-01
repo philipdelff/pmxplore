@@ -5,7 +5,7 @@
 \title{create individual concentration time plot}
 \usage{
 gg_ind_conc_time(df, obs = DV, pred = PRED, ipred = IPRED, x = TAPD,
-  id = ID, occ = OCC, facetRows = 3, ...)
+  id = ID, occ = OCC, facet_rows = 3, ...)
 }
 \arguments{
 \item{df}{dataframe}
@@ -22,6 +22,6 @@ gg_ind_conc_time(df, obs = DV, pred = PRED, ipred = IPRED, x = TAPD,
 
 \item{occ}{name of OCC column, Default: OCC}
 
-\item{facetRows}{number of rows to factet on, Default: 3}
+\item{facet_rows}{number of rows to factet on, Default: 3}
 }
 

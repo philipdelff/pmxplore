@@ -4,7 +4,7 @@
 \alias{gg_box_plot}
 \title{boxplot}
 \usage{
-gg_box_plot(df, x, y)
+gg_box_plot(df, x, y, angle = 40, hjust = 1, x.grid = F)
 }
 \arguments{
 \item{df}{dataframe}
@@ -12,6 +12,12 @@ gg_box_plot(df, x, y)
 \item{x}{x variable}
 
 \item{y}{y variable}
+
+\item{angle}{angle passed to theme axis.text.x, Default: 40}
+
+\item{hjust}{hjust passed to theme axis.text.x, Default: 1}
+
+\item{x.grid}{panel grid on x, Default: F}
 }
 \value{
 ggplot object

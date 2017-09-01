@@ -2,7 +2,7 @@
 % Please edit documentation in R/allyCor.R
 \name{ally_cor}
 \alias{ally_cor}
-\title{ally_cor}
+\title{correlation plot for ggally}
 \usage{
 ally_cor(data, mapping, cor_method = "pearson",
   cor_use = "pairwise.complete.obs", cor_threshold = 0.4,
@@ -19,7 +19,7 @@ ally_cor(data, mapping, cor_method = "pearson",
 
 \item{cor_threshold}{threshold for color switch, Default: 0.4}
 
-\item{cor_color}{colour for used at color switch, Default: 'red'}
+\item{cor_color}{color used at color switch, Default: 'red'}
 }
 \value{
 ggplot object (passed to ggally)
