@@ -17,7 +17,6 @@ gg_bar <- function(df, x, numbers=F){
       theme(axis.text.x = element_text(angle=40, hjust=1),
             panel.grid = element_blank()) 
   )
-  # hello
   
   if(numbers){
     p <- rlang::quo(
