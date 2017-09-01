@@ -14,3 +14,4 @@ gg_histogram(df, x)
 \value{
 ggplot object
 }
+

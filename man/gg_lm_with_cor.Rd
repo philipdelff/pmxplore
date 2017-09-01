@@ -20,3 +20,4 @@ gg_lm_with_cor(df, x, y, corThreshold = 0.4, corMethod = "pearson", ...)
 \value{
 ggplot object
 }
+

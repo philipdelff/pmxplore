@@ -20,3 +20,4 @@ gg_counts(df, x, y, corThreshold = 0.4, numbers = F, ...)
 \value{
 ggplot object
 }
+

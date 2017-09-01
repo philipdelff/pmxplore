@@ -24,3 +24,4 @@ gg_ind_conc_time(df, obs = DV, pred = PRED, ipred = IPRED, x = TAPD,
 
 \item{facetRows}{number of rows to factet on, Default: 3}
 }
+

@@ -16,3 +16,4 @@ gg_bar(df, x, numbers = F)
 \value{
 ggplot object
 }
+
