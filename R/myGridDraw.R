@@ -1,19 +1,19 @@
-###################################################
-# myGridDraw.R
-# 
-# Author: Helena Edlund
-# Created on: 2017-03-23
-# Modified on:
-# Purpose: Function for printing list of grids to pdf
-# Dependencies: grid
-###################################################
 
-myGridDraw <- function(x){
-# forces a new page for grids to avoid printing all on the same page
+#' @title For printing a list of grobs to pdf
+#' @description forces a new page for grob objects to avoid printing all on the same page
+#' @param x grob grids
+#' @return "printed" grob object
+#' @seealso 
+#'  \code{\link[grid]{grid.newpage}},\code{\link[grid]{grid.draw}}
+#' @rdname grob_draw
+#' @export 
+#' @importFrom grid grid.newpage grid.draw
+
+grob_draw <- function(x){
   if(is.grob(x)){
-    grid.newpage()
-    grid.draw(x)
+    grid::grid.newpage()
+    grid::grid.draw(x)
   } else {
-    grid.draw(x)
+    grid::grid.draw(x)
   }
 }
