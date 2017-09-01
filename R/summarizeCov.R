@@ -1,23 +1,23 @@
 #' @title summarize covariates
 #' @description summarize covariates either of type continuous or categorical
 #' @param df data frame
-#' @param covVector vector of column names
+#' @param cov_vector vector of column names
 #' @param type continous or categorical variable, Default: 'Cont'
 #' @param ... additional details to pass to summaryFun
 #' @return summary dataframe
-#' @rdname summarizeCov
+#' @rdname summarize_cov
 #' @export 
-summarizeCov <- function(df, covVector, type = "Cont", ...){
+summarize_cov <- function(df, cov_cector, type = "Cont", ...){
   
   if(type == "Cont"){
-    summaryFun <- summarizeCont
+    summary_fun <- summarize_cont
   }
   if(type == "Cat"){
-    summaryFun <- summarizeCat
+    summary_fun <- summarize_cat
   }
-  for(i in unique(covVector)) {
-    tmp <- summaryFun(df, i, ...)
-    if(i == covVector[1]){
+  for(i in unique(cov_vector)) {
+    tmp <- summary_fun(df, i, ...)
+    if(i == cov_vector[1]){
       out <- tmp
     }else{
       out <- rbind(out, tmp)
