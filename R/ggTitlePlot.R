@@ -1,12 +1,12 @@
 #' @title title page
 #' @description Plot to serve as divider page for multiple plot pdfs
 #' @param title test string to output in plot
-#' @param text_size size of text, Default: 18
+#' @param text_size size of text, Default: 8
 #' @return ggplot object
 #' @rdname gg_title_plot
 #' @export
 #' @import ggplot2
-gg_title_plot <- function(title, text_size=18){
+gg_title_plot <- function(title, text_size=8){
   
   tmp <- data.frame(x=5, y=5, label=title)
   
