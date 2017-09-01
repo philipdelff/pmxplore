@@ -1,6 +1,6 @@
 
-#' @title ally_count
-#' @description count plot to be used with ggally
+#' @title count plot for ggally
+#' @description count plot to be used with ggally. To be used with categorical variables.
 #' @param data data frame
 #' @param mapping aes passed to ggplot
 #' @param counts absolute number or relative, see details, Default: 'rel'
@@ -101,7 +101,7 @@ ally_count <- function(data, mapping, counts="abs",
                       ylim=c(seq(1, y_max, by=1), y_max+0.25)) + 
       
       theme(axis.text.x = element_text(angle = angle, hjust=hjust_x),
-            axis.text.y = element_text(angle = anlge, vjust=vjust_y))
+            axis.text.y = element_text(angle = angle, vjust=vjust_y))
   } 
   
   return(p)
