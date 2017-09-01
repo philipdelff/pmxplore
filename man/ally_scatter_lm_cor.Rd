@@ -5,7 +5,8 @@
 \title{linear regression with correlation threshold for ggally}
 \usage{
 ally_scatter_lm_cor(data, mapping, cor_method = "pearson",
-  cor_use = "pairwise.complete.obs", cor_threshold = 0.4, cor_color, ...)
+  cor_use = "pairwise.complete.obs", cor_threshold = 0.4,
+  cor_color = "red", ...)
 }
 \arguments{
 \item{data}{data frame}

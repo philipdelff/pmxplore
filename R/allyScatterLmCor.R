@@ -17,7 +17,7 @@ ally_scatter_lm_cor <-
            cor_method = "pearson",
            cor_use = 'pairwise.complete.obs',
            cor_threshold=0.4,
-           cor_color, ...) {
+           cor_color="red", ...) {
     
     x_col <- data[[deparse(mapping$x)]]
     y_col <- data[[deparse(mapping$y)]]
