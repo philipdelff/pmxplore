@@ -4,16 +4,16 @@
 \alias{summarize_cov}
 \title{summarize covariates}
 \usage{
-summarize_cov(df, cov_cector, type = "Cont", ...)
+summarize_cov(df, cov_vector, type = "Cont", ...)
 }
 \arguments{
 \item{df}{data frame}
 
+\item{cov_vector}{vector of column names}
+
 \item{type}{continous or categorical variable, Default: 'Cont'}
 
-\item{...}{additional details to pass to summaryFun}
-
-\item{cov_vector}{vector of column names}
+\item{...}{additional details to pass to summary_fun}
 }
 \value{
 summary dataframe
