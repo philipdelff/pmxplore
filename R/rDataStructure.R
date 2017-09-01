@@ -16,7 +16,7 @@
 #' @rdname r_data_structure
 r_data_structure <- function(.df, 
                            data_spec="dataSpecificationFile.csv",
-                           data_spec_dir = "./Scripts", 
+                           data_spec_dir = "./Scripts/Setup", 
                            nm_output=FALSE){
 
   # ------------------------------------------------------------------
