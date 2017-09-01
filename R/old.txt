@@ -1,0 +1,775 @@
+###################################################
+# s02_projectFunctions.R
+# 
+# Author: Helena Edlund
+# Created on: 2017-03-23
+# Modified on:
+# Purpose: Generate functions used troughout project
+# Dependencies: s00_main.R (for libraries)
+#               s01_projectVariables.R
+###################################################
+
+# ------------------------------------------------------------------
+#  Function to ssh the calvin cluster
+# ------------------------------------------------------------------
+sshCalvin <- function(cmd, dir="./", ...) {
+  # This function works as a ssh between calvin and zilter. 
+  # It requires passwordless access between calvin and zilter. 
+  # The character string "cmd" should be a linux command 
+  # as if you were using putty/other ssh program. 
+  # dir is the dir where you want to execute the command. 
+  system(paste0("ssh -q calvin.seml.astrazeneca.net \"cd $(pwd); cd ", dir ,
+                "; module load psn nonmem && ", cmd, "\"" ), ...)
+  }
+
+# ------------------------------------------------------------------
+#  Function for setting the R dataframe structure
+# ------------------------------------------------------------------
+# The function reads in a csv file with the data specifications 
+# (will be delivered with the dataset if requested through QCP order form)
+# It has the format: Variable, Code, DeCode, Description, R Variable Type. 
+# DeCode is not used but kept for reference to original data spec.
+
+# The description column may be changed if a different description is prefered
+# (used to represent the factors in plots)
+
+rDataStructure <- function(dataFrame, 
+                           dataSpec="dataSpecificationFile.csv",
+                           dataSpecDir = "./Scripts", 
+                           NMOutput=F){
+  # Function which loopes through the columns of the dataframe,
+  # idenifies matching column in the spec and does the appropriate setting
+  
+  # ------------------------------------------------------------------
+  #  Functions for what to do with each column type
+  # ------------------------------------------------------------------
+  charCol <- function(colvector){# Pure character vector (e.g. Comments or units)
+    if(!is.character(colvector)){
+      colvector <- as.character(colvector)
+    }
+    return(colvector)
+  }
+  numCol <- function(colvector){# Numerical / integer
+    if(!is.numeric(colvector)){
+      colvector <- as.numeric(as.character(colvector))
+    }
+    return(colvector)
+  }
+  catCharCol <- function(colvector, levs, labs){# catgorical (w specified levels)
+    if(is.factor(colvector)){
+      colvector <- as.character(colvector)
+    }
+    colvector <- factor(colvector, 
+                        levels = levs,
+                        labels = labs)
+    return(colvector)
+  }
+  
+  # ------------------------------------------------------------------
+  # Changes if the dataset is a nonmem output file
+  # ------------------------------------------------------------------
+  # Rename ID back to NMSEQSID
+  if(NMOutput==T & any(names(dataFrame)=="ID")){
+    names(dataFrame)[names(dataFrame)=="ID"] <- "NMSEQSID"
+  }
+  # Time as a numeric varaible
+  if(NMOutput==T & any(names(dataFrame)=="TIME")){
+    dataFrame$TIME  <- as.numeric(dataFrame$TIME)
+  }
+  # Correct any empty cells that has been filled with zeros in nonmem
+  if(NMOutput==T){
+    if(any(names(dataFrame)=="AMT")){
+      # remove only 0 amt which are not a dosing event
+      dataFrame$AMT   <- as.numeric(dataFrame$AMT)
+      dataFrame$AMT[dataFrame$AMT==0 & dataFrame$EVID==1] <- NA
+    }
+    if(any(names(dataFrame)=="DV")){
+      # remove only 0 which are not a observation event
+      dataFrame$DV   <- as.numeric(dataFrame$DV)
+      dataFrame$DV[dataFrame$DV==0 & dataFrame$EVID==0] <- NA
+    }
+    if(any(names(dataFrame)=="LNDV")){
+      # remove only 0 which are not a observation event
+      dataFrame$LNDV   <- as.numeric(dataFrame$LNDV)
+      dataFrame$LNDV[dataFrame$LNDV==0 & dataFrame$EVID==0] <- NA
+    }
+    if(any(names(dataFrame)=="BLQ")){
+      # remove only 0 which are at a dose event
+      dataFrame$BLQ   <- as.numeric(dataFrame$BLQ)
+      dataFrame$BLQ[dataFrame$BLQ==0 & dataFrame$EVID==0] <- NA
+    }
+    if(any(names(dataFrame)=="OCC")){
+      # remove all 0 since no 0 occ in data
+      dataFrame$OCC   <- as.numeric(dataFrame$OCC)
+      dataFrame$OCC[dataFrame$OCC==0] <- NA
+    }
+    
+    # Make sure all etas are numeric
+    for(j in 1:sum(str_detect(names(dataFrame), "ETA"))){
+      dataFrame[,paste0("ETA", j)] <- 
+        as.numeric(as.character(dataFrame[,paste0("ETA", j)]))
+    }
+  }
+  
+  # ------------------------------------------------------------------
+  # Read in the specification file
+  # ------------------------------------------------------------------
+  if(!is.data.frame(dataSpec)){
+    dataSpec <- read.csv(paste(dataSpecDir,dataSpec, sep="/"), 
+                         stringsAsFactors = F)
+    names(dataSpec) <- c("Variable","VariableDescription",
+                         "Code","DeCode","Description",
+                         "Type")
+  }
+  
+  # ------------------------------------------------------------------
+  # For available columns, match the spec
+  # ------------------------------------------------------------------
+  for(i in names(dataFrame)){
+    # only set column if column is defined in dataSpec
+    if(i %in% unique(dataSpec$Variable)){
+      
+      # Find corresponding variable in dataSpec
+      var <- dataSpec[dataSpec$Variable==i,]
+      
+      # Set the structure depending on type of variable
+      if(unique(var$Type) == "Character"){
+        dataFrame[,i] <- charCol(dataFrame[,i])
+      }
+      if(unique(var$Type) == "Numeric" | unique(var$Type) == "Integer"){
+        dataFrame[,i] <- numCol(dataFrame[,i])
+      }
+      if(unique(var$Type) == "Categorical"){
+        # Extract levels and labels
+        code <- var$Code
+        descr <- var$Description
+        
+        if(all(is.na(code))){# "numeric" column which should be considered categorical
+        # extract the unique values and use as lables
+          code <- sort(unique(dataFrame[!is.na(dataFrame[,i]),i])) 
+          descr <- code
+        }
+        dataFrame[,i] <- catCharCol(dataFrame[,i], 
+                                    levs = code, 
+                                    labs = descr)
+        
+      }
+    }
+  }# end of loop
+  
+  # Issue warning if non-defined columns in dataset
+  if(any(!(names(dataFrame) %in% unique(dataSpec$Variable)))){
+    whichNotDefined <- 
+      names(dataFrame)[(!(names(dataFrame) %in% unique(dataSpec$Variable)))]
+    warning(paste0("Columns: '", paste(whichNotDefined, collapse=" "), 
+                   "' not defined in data specification file. ", 
+                   "R structure not set for these column(s)."))
+  }
+  return(dataFrame)
+}
+
+# ------------------------------------------------------------------
+#  Functions for plotting
+# ------------------------------------------------------------------
+# Printing grids to pdf 
+# (otherwise it overwrites on the same page)
+myGridDraw <- function(x){
+  if(is.grob(x)){
+    grid.newpage()
+    grid.draw(x)
+  } else {
+    grid.draw(x)
+  }
+}
+
+# Generating header page
+titlePage <- function(description){
+  tm <- data.frame(x = 1:10, y = 1:10)
+  
+  p <- ggplot(data=tm, aes(x=x, y=y)) + geom_blank() +
+    geom_text(data=data.frame(x=5, y=5, label=description), aes(label=label), size=8) +
+    coord_cartesian(xlim=c(0,10),ylim=c(0,10)) + 
+    theme_bw() + theme(
+      axis.title = element_blank(),
+      axis.text = element_blank(),
+      axis.ticks = element_blank(),
+      panel.border = element_blank(),
+      panel.grid = element_blank()
+    )
+  return(p)
+}
+
+# Plots to use with ggally/ggduo
+countNSize <- function(x){
+  return(c(y = unique(x) + 0.1, label = length(x)))
+}
+
+lmWithCor <- function(data, mapping, corThreshold = 0.4, ...) {
+  
+  x <- data[[deparse(mapping$x)]]
+  y <- data[[deparse(mapping$y)]]
+  
+  # calculate correlation only if there are values different from zero 
+  # (important for ETA corr plots)
+  if(all(x==0)){
+    cor <- 0  }
+  if(all(y==0)){
+    cor <- 0  }
+  if(!all(x==0) & !all(y==0)){
+    cor <- cor(x, y, method = "pearson",
+               use="pairwise.complete.obs")
+  }
+  
+  if(cor <= -corThreshold | cor >= corThreshold) {
+    pointColour <- "red" 
+    textColour <- "red" 
+  } else {
+    pointColour <- "#737373"
+    textColour <- "black" }
+  
+  if(!all(x==0) & !all(y==0)){
+    ggally_smooth_lm(data, mapping, col=pointColour, shape = 1,...) +
+      ggplot2::geom_label(
+        data = data.frame(
+          x = min(x, na.rm = TRUE),
+          y = max(y, na.rm = TRUE),
+          lab = round(cor, digits = 3)),
+        mapping = ggplot2::aes(x = x, y = y, label = lab, color = NULL),
+        hjust = 0, vjust = 1, fontface = "bold", col = textColour
+      )
+  } else {
+    ggally_smooth_lm(data, mapping, col=pointColour, shape = 1,...) 
+  }
+}
+scatterWithSmooth <- function(data, mapping, ...) {
+  ggally_smooth_loess(data, mapping,
+                      colour = "#737373", shape = 1, ...)
+}
+myHistogram <- function(data, mapping, ...){
+  p <- ggplot(data = data, mapping = mapping) + 
+    geom_histogram(fill="#737373", colour="#525252")
+  return(p)
+}
+myBarchart <- function(data, mapping, numbers = F ,...){
+  p <- ggplot(data = data, mapping = mapping) + 
+    geom_bar(fill="#a0a0a0", colour="#898989") +
+    theme(axis.text.x = element_text(angle=40, hjust=1),
+          panel.grid = element_blank()) 
+  if(numbers==T) {
+    p <- p + geom_text(aes(label = ..count.., y= (..count..)),
+                       stat= "count",fontface = "bold")
+  }
+  return(p)
+}
+myCountPlot <- function(data, mapping, numbers = F ,...){
+  p <- ggplot(data=data, mapping = mapping) +
+    geom_count(fill="#a0a0a0", colour="#898989") +
+    scale_size_area() + guides(size = "none") +
+    theme(axis.text.x = element_text(angle = 35, hjust=1),
+          axis.text.y = element_text(angle = 35, vjust=0))
+  
+  if(numbers == T){
+    p <- p + stat_summary(fun.data = countNSize, geom = "text", hjust=-0.5)
+  } 
+  return(p)
+}
+myBoxplot <- function(data, mapping, ...){
+  p <- ggplot(data = data, mapping = mapping) + 
+    geom_boxplot(fill="#a0a0a0", outlier.shape=1) +
+    theme(axis.text.x = element_text(angle=40, hjust=1),
+          panel.grid.minor = element_blank(),
+          panel.grid.major.x = element_blank())
+  return(p)
+}
+
+# ------------------------------------------------------------------
+#   Model evaluation plots 
+# ------------------------------------------------------------------
+## Observed vs population pred
+obsVsPred <- 
+  function(data, mapping=aes(y=DV, x=PRED), ...){
+    
+    x <- data[[deparse(mapping$x)]]
+    y <- data[[deparse(mapping$y)]]
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_abline(slope=1, intercept=0) +  # line of identity
+      geom_point(aes(shape=factor(BLQ)), size = pointSize) +
+      scale_shape_manual(values=c(1, 4)) + guides(shape="none") +
+      geom_smooth(method="loess") + 
+      coord_cartesian(xlim=c(0, max(c(x, y), na.rm = T)),
+                      ylim=c(0, max(c(x, y), na.rm = T))) +
+      labs(y="Observed", x="Population prediction")
+    return(p)
+  }
+
+## Observed vs individual pred
+obsVsIpred <- 
+  function(data, mapping=aes(y=DV, x=IPRED), ...){
+    
+    x <- data[[deparse(mapping$x)]]
+    y <- data[[deparse(mapping$y)]]
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_abline(slope=1, intercept=0) +  # line of identity
+      geom_point(aes(shape=factor(BLQ)), size = pointSize) +
+      scale_shape_manual(values=c(1, 4)) + guides(shape="none") +
+      geom_smooth(method="loess") + 
+      coord_cartesian(xlim=c(0, max(c(x, y), na.rm = T)),
+                      ylim=c(0, max(c(x, y), na.rm = T))) +
+      labs(y="Observed", x="Individual prediction")
+    return(p)
+  }
+
+## IWRES vs time
+iwresVsTime <- 
+  function(data, mapping=aes(y=IWRESI, x=TIME),
+           labs=c(y="|IWRES|", x="Time"), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_point(shape=1, size=pointSize) +
+      geom_smooth(method="loess") + 
+      scale_y_continuous(breaks=seq(from=0, to=max(y, na.rm = T), by=5))
+    labs(y=labs[["y"]], x=labs[["x"]])
+    return(p)
+  }
+
+## CWRES vs pop pred
+cwresVsPred <- 
+  function(data, mapping=aes(y=CWRES, x=PRED), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    ymax <- ceiling(max(abs(y), na.rm = T))
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_hline(aes(yintercept=0)) + # line at y=0
+      geom_point(shape=1, size = pointSize) +
+      geom_smooth(method="loess") + 
+      coord_cartesian(ylim=c(-ymax, ymax)) +
+      scale_y_continuous(breaks=seq(from = -ymax, to = ymax, by=2)) +
+      labs(y="CWRES", x="Population prediction")
+    return(p)
+  }
+
+## CWRES vs time
+cwresVsTime <- 
+  function(data, mapping=aes(y=CWRES, x=TIME), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    ymax <- ceiling(max(abs(y), na.rm = T))
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_point(shape=1, size=pointSize) +
+      geom_hline(aes(yintercept=0)) +
+      geom_smooth(method="loess") +
+      coord_cartesian(ylim=c(-ymax, ymax)) +
+      scale_y_continuous(breaks=seq(from = -ymax, to = ymax, by=2)) +
+      labs(y="CWRES", x="Time") 
+    return(p)
+  }
+
+## CWRES vs TAD
+cwresVsTAD <- 
+  function(data, mapping=aes(y=CWRES, x=TAPD), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    ymax <- ceiling(max(abs(y), na.rm = T))
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_point(shape=1, size=pointSize) +
+      geom_hline(aes(yintercept=0)) +
+      geom_smooth(method="loess") +
+      coord_cartesian(ylim=c(-ymax, ymax)) +
+      scale_y_continuous(breaks=seq(from = -ymax, to = ymax, by=2)) +
+      labs(y="CWRES", x="Time after dose") 
+    return(p)
+  }
+
+## CWRES QQ plot
+cwresQQ <- 
+  function(data, mapping=aes(sample=CWRES), ...){
+    p <- ggplot(data, mapping = mapping) + 
+      geom_abline(slope=1, intercept=0) +  # line of identity
+      geom_point(stat = "qq", shape=1, size=pointSize) +
+      labs(y="Sample", x="Theoretical") 
+    return(p)
+  }
+
+
+## NPDE vs pop pred
+npdeVsPred <- 
+  function(data, mapping=aes(y=NPDE, x=PRED), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    ymax <- ceiling(max(abs(y), na.rm = T))
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_hline(aes(yintercept=0)) + # line at y=0
+      geom_point(shape=1, size = pointSize) +
+      geom_smooth(method="loess") + 
+      coord_cartesian(ylim=c(-ymax, ymax)) +
+      scale_y_continuous(breaks=seq(from = -ymax, to = ymax, by=2)) +
+      labs(y="NPDE", x="Population prediction")
+    return(p)
+  }
+
+## NPDE vs time
+npdeVsTime <- 
+  function(data, mapping=aes(y=NPDE, x=TIME), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    ymax <- ceiling(max(abs(y), na.rm = T))
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_point(shape=1, size=pointSize) +
+      geom_hline(aes(yintercept=0)) +
+      geom_smooth(method="loess") +
+      coord_cartesian(ylim=c(-ymax, ymax)) +
+      scale_y_continuous(breaks=seq(from = -ymax, to = ymax, by=2)) +
+      labs(y="NPDE", x="Time") 
+    return(p)
+  }
+
+## NPDE vs TAD
+npdeVsTAD <- 
+  function(data, mapping=aes(y=NPDE, x=TAPD), ...){
+    
+    y <- data[[deparse(mapping$y)]]
+    ymax <- ceiling(max(abs(y), na.rm = T))
+    
+    p <- ggplot(data=data, mapping = mapping) +
+      geom_point(shape=1, size=pointSize) +
+      geom_hline(aes(yintercept=0)) +
+      geom_smooth(method="loess") +
+      coord_cartesian(ylim=c(-ymax, ymax)) +
+      scale_y_continuous(breaks=seq(from = -ymax, to = ymax, by=2)) +
+      labs(y="NPDE", x="Time after dose") 
+    return(p)
+  }
+
+## NPDE QQplot
+npdeQQ <- 
+  function(data, mapping=aes(sample=NPDE), ...){
+    p <- ggplot(data, mapping = mapping) + 
+      geom_abline(slope=1, intercept=0) +  # line of identity
+      geom_point(stat = "qq", shape=1, size=pointSize) +
+      labs(y="Sample", x="Theoretical") 
+    return(p)
+  }
+
+## Settings for individual concentration time curves
+
+## Generate list of dataset for individual graps
+indDatasetSplit <- function(dataset, nSplit=12){
+  # Generates a list of dataset subsets to get nSplit plots per page
+  # Requires a ID column in the dataset
+  
+  # define number of splits
+  n <- ceiling(length(unique(dataset$ID))/nSplit)
+  
+  # Add splitting columns to dataset
+  dataset$Splits[!duplicated(dataset$ID)] <-
+    rep(1:n, each=nSplit, length.out=length(unique(dataset$ID)))
+  dataset$Splits <- na.locf(dataset$Splits)
+  
+  dataSplits <- split(dataset, dataset$Splits)
+  
+  return(dataSplits)
+}
+
+## Concentration vs Time after dose
+indPlotTAPD <- 
+  function(data, ...){
+    p <- 
+      # observed rich
+      ggplot(data[!is.na(data$OCC),],
+             mapping=aes(x=TAPD, y=DV, colour=OCC, group=ID.OCC)) + 
+      geom_point(shape=1, size=pointSize) +
+      # predicted rich
+      geom_line(data=data[!is.na(data$OCC),],
+                mapping = aes(x=TAPD, y=IPRED, colour=OCC, group=ID.OCC, linetype=REGIMEN),
+                size=lineSize) +
+      
+      # observed sparse
+      geom_point(data[is.na(data$OCC),], mapping=aes(x=TAPD, y=DV), 
+                 shape=1, size=pointSize, col="black", inherit.aes=F) + 
+      
+      # predicted sparse
+      geom_point(data=data[is.na(data$OCC),], mapping=aes(x=TAPD, y=IPRED),
+                 shape=4, size=pointSize, col="black", inherit.aes=F) +
+      # lloq
+      geom_hline(aes(yintercept=LLOQ), linetype="dashed") +
+      # settings
+      scale_color_brewer(palette = "Dark2") +
+      facet_wrap(~ID, nrow=3, labeller="label_both", scales="free_y") +
+      theme(legend.position = "bottom") + 
+      labs(x="Time after dose", y = "Concentration") 
+    
+    return(p)
+  }
+
+## Concentration vs Time
+indPlotTIME <- 
+  function(data, ...){
+    p <- 
+      # observed rich
+      ggplot(data[!is.na(data$OCC),],
+             mapping=aes(x=TIME, y=DV, colour=OCC, group=ID.OCC)) + 
+      geom_point(shape=1, size=pointSize) +
+      # predicted rich
+      geom_line(data=data[!is.na(data$OCC),],
+                mapping = aes(x=TIME, y=IPRED, colour=OCC, group=ID.OCC, linetype=REGIMEN),
+                size=lineSize) +
+      
+      # observed sparse
+      geom_point(data[is.na(data$OCC),], mapping=aes(x=TIME, y=DV), 
+                 shape=1, size=pointSize, col="black", inherit.aes=F) + 
+      
+      # predicted sparse
+      geom_point(data=data[is.na(data$OCC),], mapping=aes(x=TIME, y=IPRED),
+                 shape=4, size=pointSize, col="black", inherit.aes=F) +
+      # lloq
+      geom_hline(aes(yintercept=LLOQ), linetype="dashed") +
+      # settings
+      scale_color_brewer(palette = "Dark2") +
+      facet_wrap(~ID, nrow=3, labeller="label_both", scales="free_y") +
+      theme(legend.position = "bottom") + 
+      labs(x="Time", y = "Concentration") 
+    
+    return(p)
+  }
+
+myVPC <- function(vpcresultsfile, vpctabfile, type="p", 
+                  xlab = "Time after dose (h)",
+                  ylab= "Concentrations (ng/mL)") {
+  p <- xpose.VPC(vpc.info = vpcresultsfile,
+            vpctab = vpctabfile,
+            main = NULL,
+            type = type,
+            xlb = xlab,
+            ylb = ylab,
+            col="darkgray",
+            PI.real.up.col="black",
+            PI.real.down.col="black",
+            PI.real.med.col="black", 
+            PI.real.up.lty="dotted",
+            PI.real.down.lty="dotted",
+            PI.ci.up.arcol = "#7570b3",
+            PI.ci.down.arcol = "#7570b3",
+            PI.ci.med.arcol = "#1b9e77")
+  return(p)
+}
+
+# ------------------------------------------------------------------
+#   Functions for summarizing covariates
+# ------------------------------------------------------------------
+# Continous 
+summarizeCont <- function(dataFrame, colName){
+  dplyr::summarise(dataFrame,
+                   Characteristic = colName,
+                   N        = sum(!is.na(get(colName)) & get(colName)!=-99),
+                   Mean     = mean(get(colName), na.rm = T), 
+                   SD       = sd(get(colName), na.rm = T), 
+                   Median   = quantile(get(colName),probs =0.50, na.rm = T, names=F), 
+                   Min      = min(get(colName), na.rm = T),
+                   p5th     = quantile(get(colName),probs =0.05, na.rm = T, names=F),
+                   p25th    = quantile(get(colName),probs =0.25, na.rm = T, names=F),
+                   p75th    = quantile(get(colName),probs =0.75, na.rm = T, names=F),
+                   p95th    = quantile(get(colName),probs =0.95, na.rm = T, names=F),
+                   Max      = max(get(colName), na.rm = T),
+                   NMissing = sum(is.na(get(colName))))
+}
+
+# Categorical
+summarizeCat <- function(dataFrame, colName){
+  summary <- 
+    dataFrame %>% 
+    group_by(Category=get(colName)) %>% 
+    summarise(N = n()) %>%
+    mutate(Percent = 100*(N / sum(N)), 
+           Characteristic = colName, 
+           Category = as.character(Category), 
+           Category = ifelse(is.na(Category), "Missing", Category)) %>% 
+    select(Characteristic, Category, N, Percent)
+  return(as.data.frame(summary))
+}
+
+## wrapper for application over covariate vector
+mySummary <- function(dataFrame, covVector, summaryFun){ 
+  
+  for(i in unique(covVector)) {
+    temp <- summaryFun(dataFrame, i)
+    if(i == covVector[1]){
+      temp2 <- temp
+    }else{
+      temp2 <- rbind(temp2, temp)
+    }
+  }
+  return(temp2)
+}
+
+# ------------------------------------------------------------------
+# Functions for extracting parameter estimates and precision and merge to data.frame
+# ------------------------------------------------------------------
+summarizeRun <- function(modNo, refModNo, listobject, record, descr){
+  summary <- 
+    data.frame(Run = as.character(modNo),
+               Minimization = listobject$term[1],
+               OFV = as.numeric(as.character(listobject$ofv)),
+               Reference = as.numeric(refModNo),
+               dOFV = ifelse(is.na(refModNo), NA, 
+                             as.numeric(as.character(listobject$ofv)) - 
+                               record$OFV[record$Run==refModNo]),
+               Description = descr)
+  return(summary)
+}
+
+myParExtract <- function(listobject, thetaPar, omegaPar, sigmaPar) {
+  nThetaPar <- length(thetaPar)
+  nOmegaPar <- length(omegaPar)
+  nSigmaPar <- length(sigmaPar)
+  
+  # thetas
+  tPars <- data.frame(par=thetaPar, stringsAsFactors=F)
+  tPars$estimate <- listobject$thetas
+  tPars$SE <- listobject$sethetas
+  tPars$RSE <- (listobject$sethetas /tPars$estimate)*100
+
+  # omegas
+  oPars <- data.frame(par=omegaPar, stringsAsFactors=F)
+  
+  for(i in 1:nOmegaPar){
+    diag <- listobject$omega[[i]][[i]]
+    if(i==1){
+      estimate <- diag
+    }else{
+      estimate <- c(estimate, diag)
+    }
+  }
+  oPars$estimate <- estimate
+  oPars$CV <- sqrt(oPars$estimate)*100
+  for(i in 1:nOmegaPar){
+    diag <- listobject$seomega[[i]][[i]]
+    if(i==1){
+      estimate <- diag
+    }else{
+      estimate <- c(estimate, diag)
+    }
+  }
+  oPars$SE <- estimate
+  oPars$RSE <- (oPars$SE/oPars$estimate)*100
+  
+  # shrinkage
+  if(nOmegaPar <= 10){
+    oPars$Shrink <- as.numeric(
+      str_split(listobject$term[str_detect(listobject$term, "ETAshrink")], "  ")[[1]][-1])
+    # oPars$ebvShrink <- as.numeric(
+    #   str_split(listobject$term[str_detect(listobject$term, "EBVshrink")], "  ")[[1]][-1])
+  } else {
+    oPars$Shrink <- rep(NA, nOmegaPar)
+    oPars$Shrink[1:10] <- as.numeric(
+      str_split(listobject$term[str_detect(listobject$term, "ETAshrink")], "  ")[[1]][-1])
+    pos <- which(str_detect(listobject$term, "ETAshrink") == "TRUE") + 1
+    oPars$Shrink[11:nOmegaPar] <- as.numeric(
+      str_split(listobject$term[pos], "  ")[[1]][str_split(listobject$term[pos], "  ")[[1]] != ""])
+    }
+  
+  # sigmas
+  sPars <- data.frame(par = sigmaPar, stringsAsFactors=F)
+  for(i in 1:nSigmaPar){
+    diag <- listobject$sigma[[i]][[i]]
+    if(i==1){
+      estimate <- diag
+    }else{
+      estimate <- c(estimate, diag)
+    }
+  }
+  sPars$estimate <- estimate
+  sPars$SD <- sqrt(sPars$estimate)
+  for(i in 1:nSigmaPar){
+    diag <- listobject$sesigma[[i]][[i]]
+    if(i==1){
+      estimate <- diag
+    }else{
+      estimate <- c(estimate, diag)
+    }
+  }
+  sPars$SE <- estimate
+  sPars$RSE <- (sPars$SE / sPars$estimate)*100
+  
+  # shrinkage
+  sPars$Shrink <- as.numeric(
+    str_split(listobject$term[str_detect(listobject$term, "EPSshrink")], "  ")[[1]][-1])
+  
+  Pars <- rbind.fill(tPars, oPars, sPars)
+
+  ## round 
+  Pars$estimate <- signif(Pars$estimate, digits=3)
+  Pars$SE       <- signif(Pars$SE, digits=3)
+  Pars$RSE      <- signif(abs(Pars$RSE), digits=3)
+  Pars$CV       <- signif(Pars$CV, digits=3)
+  Pars$Shrink   <- signif(Pars$Shrink, digits=3)
+  Pars$SD       <- signif(Pars$SD, digits=3)
+  
+  return(Pars[,c("par", "estimate", "CV", "SD", "SE", "RSE", "Shrink")])
+}
+
+myCorExtract <- function(listobject, omegas, correlations, occ=F) {
+  
+  if(occ==F){
+    par1 <- paste0("BSV_", correlations[1])
+    par2 <- paste0("BSV_", correlations[2])
+  } else {
+    par1 <- paste0("IOV_", correlations[1])
+    par2 <- paste0("IOV_", correlations[2])
+  }
+  
+  position1 <- which(omegas %in% par1)
+  position2 <- which(omegas %in% par2)
+  
+  pos1 <- min(position1, position2)
+  pos2 <- max(position1, position2)
+  
+  var1 <- listobject$omega[[pos1]][[pos1]]
+  var2 <- listobject$omega[[pos2]][[pos2]]
+
+  covariance   <- listobject$omega[[pos2]][pos1]
+  secovariance <- listobject$seomega[[pos2]][pos1]
+  rse <- (secovariance/covariance)*100
+    
+  correlation  <- covariance / (sqrt(var1) * sqrt(var2))
+
+  return(data.frame(par = paste("Cor",correlations[1],correlations[2], sep="_"),
+                    estimate = signif(correlation, digits=3),
+                    CV = NA,
+                    SD = NA,
+                    SE = signif(secovariance, digits=3),
+                    RSE = signif(abs(rse), digits=3),
+                    Shrink = NA))
+}
+
+# ------------------------------------------------------------------
+#  Function for Report
+# ------------------------------------------------------------------
+aztable <- function(dataframe, caption=NULL, label=NULL){
+  table <- 
+    dust(dataframe,
+         longtable=T,
+         hhline = T, 
+         caption = caption, 
+         label = label) %>% # label without the "tab:" (added automatically)
+    sprinkle(part="head", bold=T, 
+             border=c("top", "bottom"), 
+             border_thickness=3, border_units="pt") %>% 
+    sprinkle(row=nrow(dataframe), border=c("bottom"), 
+             border_thickness=3, border_units="pt") %>% 
+    sprinkle_print_method("latex")
+  return(table)
+  # To fix: 
+  # automatically includes two additional linebreaks between caption and table - remove.
+  # proably good to set a default for significant digits of numeric cols
+  # border thickness does for some reason not work:  
+  # Trying to update latex packages on cluster to see it that solves it
+}
