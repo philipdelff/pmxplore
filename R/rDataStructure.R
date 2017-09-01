@@ -1,42 +1,40 @@
 #' create a datastructure?
 #' @description set up data from and object + specification file
 #' @param .df data frame
-#' @param dataSpec specification file, Default: 'dataSpecificationFile.csv'
-#' @param dataSpecDir PARAM_DESCRIPTION, Default: './Scripts'
-#' @param NMOutput PARAM_DESCRIPTION, Default: FALSE
+#' @param data_spec specification file, Default: 'dataSpecificationFile.csv'
+#' @param data_spec_dir path to data_spec, Default: './Scripts'
+#' @param nm_output is the data frame a nonmem output data, Default: FALSE
 #' @description
 #' The function reads in a .csv file with the data specifications 
 #' (also accepts the same as a already loaded data frame)
 #' The data spec will be delivered with the dataset if requested through QCP order form
 #' and should include the columns: Variable, Code, DeCode, Description, R Variable Type. 
 #' The description column may be changed if a different description is preferred
-#' @return OUTPUT_DESCRIPTION
+#' @return a data frame with structure according to data spec
 #' @details DETAILS
 #' @export 
-#' @rdname rDataStructure
-rDataStructure <- function(.df, 
-                           dataSpec="dataSpecificationFile.csv",
-                           dataSpecDir = "./Scripts", 
-                           NMOutput=FALSE){
-  # Function which loops through the columns of the data frame,
-  # identifies matching column in the specification and does the appropriate setting
-  
+#' @rdname r_data_structure
+r_data_structure <- function(.df, 
+                           data_spec="dataSpecificationFile.csv",
+                           data_spec_dir = "./Scripts", 
+                           nm_output=FALSE){
+
   # ------------------------------------------------------------------
   #  Functions for what to do with each column type
   # ------------------------------------------------------------------
-  charCol <- function(colvector){
+  char_col <- function(colvector){
     if(!is.character(colvector)){
       colvector <- as.character(colvector)
     }
     return(colvector)
   }
-  numCol <- function(colvector){# Numerical/Integer
+  num_col <- function(colvector){# Numerical/Integer
     if(!is.numeric(colvector)){
       colvector <- as.numeric(as.character(colvector))
     }
     return(colvector)
   }
-  catCharCol <- function(colvector, levs, labs){# categorical w levels)
+  cat_char_col <- function(colvector, levs, labs){# categorical w levels)
     if(is.factor(colvector)){
       colvector <- as.character(colvector)
     }
@@ -50,15 +48,15 @@ rDataStructure <- function(.df,
   # Changes if the dataset is a NONMEM output file
   # ------------------------------------------------------------------
   # Rename ID back to NMSEQSID
-  if(NMOutput & any(names(.df)=="ID")){
+  if(nm_output & any(names(.df)=="ID")){
     names(.df)[names(.df)=="ID"] <- "NMSEQSID"
   }
   # Time as a numeric variable
-  if(NMOutput & any(names(.df)=="TIME")){
+  if(nm_output & any(names(.df)=="TIME")){
     .df$TIME  <- as.numeric(.df$TIME)
   }
   # Correct any empty cells that has been filled with zeros in NONMEM
-  if(NMOutput){
+  if(nm_output){
     if(any(names(.df)=="AMT")){
       # Remove any 0 AMT which are not a dosing event
       .df$AMT   <- as.numeric(.df$AMT)
@@ -95,31 +93,32 @@ rDataStructure <- function(.df,
   # ------------------------------------------------------------------
   # Read in the specification file
   # ------------------------------------------------------------------
-  if(!is.data.frame(dataSpec)){
-    dataSpec <- read.csv(paste(dataSpecDir,dataSpec, sep="/"), 
-                         stringsAsFactors = F)
-    names(dataSpec) <- c("Variable","VariableDescription",
-                         "Code","DeCode","Description",
-                         "Type")
-	# This needs to be fixed into something more flexible and less error-prone... 
+  if(!is.data.frame(data_spec)){
+    data_spec <- read.csv(file.path(data_spec_dir, data_spec), 
+                          stringsAsFactors = F)
+    names(data_spec) <- c("Variable","VariableDescription",
+                          "Code","DeCode","Description",
+                          "Type")
+    # This needs to be fixed into something more flexible and less error-prone... 
+    # Awaiting final output format from programming group
   }
   
   # ------------------------------------------------------------------
   # For available columns, match the specification
   # ------------------------------------------------------------------
   for(i in names(.df)){
-    # Only set column if column is defined in dataSpec
-    if(i %in% unique(dataSpec$Variable)){
+    # Only set column if column is defined in data_spec
+    if(i %in% unique(data_spec$Variable)){
       
-      # Extract corresponding variable from dataSpec
-      var <- dataSpec[dataSpec$Variable==i,]
+      # Extract corresponding variable from data_spec
+      var <- data_spec[data_spec$Variable==i,]
       
       # Set the structure depending on type of variable
       if(unique(var$Type) == "Character"){
-        .df[,i] <- charCol(.df[,i])
+        .df[,i] <- char_col(.df[,i])
       }
       if(unique(var$Type) == "Numeric" | unique(var$Type) == "Integer"){
-        .df[,i] <- numCol(.df[,i])
+        .df[,i] <- num_col(.df[,i])
       }
       if(unique(var$Type) == "Categorical"){
         # Extract levels and labels
@@ -127,26 +126,28 @@ rDataStructure <- function(.df,
         descr <- var$Description
         		
         if(all(is.na(code))){
-		# "numeric" column which should be considered categorical
-		# but where we extract the levels from the data (not the spec)
-        # e.g. ID and dose levels
+          # "numeric" column which should be considered categorical
+          # but where we extract the levels from the data (not the spec)
+          # e.g. ID and dose levels
           code <- unique(.df[!is.na(.df[,i]),i])
           descr <- code
         }
-        .df[,i] <- catCharCol(.df[,i], 
-                                    levs = code, 
-                                    labs = descr)
+        .df[,i] <- cat_char_col(.df[,i], 
+                                levs = code, 
+                                labs = descr)
       }
     }
-  }# end of loop
+  }
   
   # Issue warning for columns in dataset not defined in spec
-  if(any(!(names(.df) %in% unique(dataSpec$Variable)))){
+  if(any(!(names(.df) %in% unique(data_spec$Variable)))){
     whichNotDefined <- 
-      names(.df)[(!(names(.df) %in% unique(dataSpec$Variable)))]
+      names(.df)[(!(names(.df) %in% unique(data_spec$Variable)))]
     warning(paste0("Columns: '", paste(whichNotDefined, collapse=" "), 
                    "' not defined in data specification file. ", 
                    "R structure not set for these column(s)."))
   }
+  # To add: a different warning if the nmoutput is True
+  
   return(.df)
 }
