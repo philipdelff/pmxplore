@@ -14,17 +14,15 @@ print_lm_eq <- function(lm_fit){
   if(!is.list(lm_fit)){
     stop("Input is not a model object")
   }
-  if(is.list(lm_fit) & (! "call" %in% names(model))){
+  if(is.list(lm_fit) & (! "call" %in% names(lm_fit))){
     stop("Input is not a model object")
   }
-  if(is.list(lm_fit) & "call" %in% names(model)){
+  if(is.list(lm_fit) & "call" %in% names(lm_fit)){
     lm_str <- as.character(summary(lm_fit$call))
     if( ! any(str_detect(lm_str, "^lm")) ){
       stop("Input object is not a lm model object")
     }
   }
-  
-  # Testing for lm object input (there is no is.lm function)
   
   l <- list(a = format(coef(lm_fit)[1], digits = 2),
             b = format(abs(coef(lm_fit)[2]), digits = 2),
