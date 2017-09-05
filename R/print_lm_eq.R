@@ -7,8 +7,24 @@
 # https://stackoverflow.com/questions/7549694/adding-regression-line-equation-and-r2-on-graph
 #' @rdname print_lm_eq
 #' @export 
-
+#' @import stringr
 print_lm_eq <- function(lm_fit){
+  
+  # Testing for lm object input (there is no is.lm function)
+  if(!is.list(lm_fit)){
+    stop("Input is not a model object")
+  }
+  if(is.list(lm_fit) & (! "call" %in% names(model))){
+    stop("Input is not a model object")
+  }
+  if(is.list(lm_fit) & "call" %in% names(model)){
+    lm_str <- as.character(summary(lm_fit$call))
+    if( ! any(str_detect(lm_str, "^lm")) ){
+      stop("Input object is not a lm model object")
+    }
+  }
+  
+  # Testing for lm object input (there is no is.lm function)
   
   l <- list(a = format(coef(lm_fit)[1], digits = 2),
             b = format(abs(coef(lm_fit)[2]), digits = 2),
