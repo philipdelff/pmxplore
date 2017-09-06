@@ -12,6 +12,12 @@ summarize_cat <- function(df, col_name, signif=3){
   # this function doesn't make sense with regards to the whole category thing 
   # H: ok, not sure what you are refering to but it takes the levels of the factor. Let's discuss.
   sym_col_name <- rlang::sym(col_name)
+
+  # test for factor  
+  column <- df[[expr_text(col_name)]]
+  if(!is.factor(column)){
+    stop(paste(expr_text(col_name), "is not a factor"))
+  }
   
   tab <- rlang::quo(df %>% 
     group_by(Category = !!sym_col_name) %>% 
