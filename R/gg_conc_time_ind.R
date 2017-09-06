@@ -7,11 +7,11 @@
 #' @param id name of ID column, Default: ID
 #' @param occ name of OCC column, Default: OCC
 #' @param facet_rows number of rows to factet on, Default: 3
-#' @rdname ggIndConcTime
+#' @rdname gg_conc_time_ind
 #' @export 
 #' @importFrom rlang enexpr eval_tidy quo
 #' @import ggplot2
-gg_ind_conc_time <- function(df, obs=DV, pred=PRED, ipred=IPRED,
+gg_conc_time_ind <- function(df, obs=DV, pred=PRED, ipred=IPRED,
                         x=TAPD, id=ID, occ=OCC,
                         facet_rows=3, ...){
   

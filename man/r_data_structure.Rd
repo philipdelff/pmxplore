@@ -5,7 +5,7 @@
 \title{create a datastructure?}
 \usage{
 r_data_structure(.df, data_spec = "dataSpecificationFile.csv",
-  data_spec_dir = "./Scripts", nm_output = FALSE)
+  data_spec_dir = "./Scripts/Setup", nm_output = FALSE)
 }
 \arguments{
 \item{.df}{data frame}

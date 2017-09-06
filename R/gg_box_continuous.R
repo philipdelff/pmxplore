@@ -7,11 +7,11 @@
 #' @param dodge position of text, Default: 0
 #' @return ggplot object
 #' @details x-axis is continous and then grouped, useful for dose-linearity graphics
-#' @rdname gg_continuous_box
+#' @rdname gg_box_continuous
 #' @export 
 #' @importFrom rlang quo
 #' @import ggplot2
-gg_continuous_box <- function(df, x, y, 
+gg_box_continuous <- function(df, x, y, 
                               fill=NULL, dodge=0){
   x <- enexpr(x)
   y <- enexpr(y)

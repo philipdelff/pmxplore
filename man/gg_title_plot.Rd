@@ -4,12 +4,12 @@
 \alias{gg_title_plot}
 \title{title page}
 \usage{
-gg_title_plot(title, text_size = 18)
+gg_title_plot(title, text_size = 8)
 }
 \arguments{
 \item{title}{test string to output in plot}
 
-\item{text_size}{size of text, Default: 18}
+\item{text_size}{size of text, Default: 8}
 }
 \value{
 ggplot object

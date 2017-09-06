@@ -8,8 +8,9 @@
 #' @param x.grid panel grid on x, Default: F
 #' @return ggplot object
 #' @export 
+#' @rdname gg_box
 #' @importFrom rlang quo enexpr expr_text
-gg_box_plot <- function(df, x, y, 
+gg_box <- function(df, x, y, 
                         angle=40, 
                         hjust=1, 
                         x.grid=F){

@@ -6,6 +6,7 @@
 #' @param method statistical method for central tendancy, Default: 'loess'
 #' @param labs x and y label names, passed as a list, Default: list(y = "Observed", x = "Predicted")
 #' @return ggplot object
+#' @rdname gg_obs_vs_pred
 #' @export 
 #' @import ggplot2
 gg_obs_vs_pred <- function(df, y, x, blq = NULL, 
