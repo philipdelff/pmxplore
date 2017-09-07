@@ -2,7 +2,7 @@
 % Please edit documentation in R/aztable.R
 \name{aztable}
 \alias{aztable}
-\title{az specific pixidust table}
+\title{pixiedust::dust with az specifications}
 \usage{
 aztable(df, caption = NULL, label = NULL, print_method = "latex",
   long = F)
@@ -19,9 +19,9 @@ aztable(df, caption = NULL, label = NULL, print_method = "latex",
 \item{long}{use longtable environment (for latex-use only), Default: F}
 }
 \value{
-pixiedust object
+dust object
 }
 \description{
-Wrapper for az specifications of pixiedust tables
+Wrapper for pixiedust::dust with az specifications
 }
 
