@@ -107,7 +107,6 @@ dose_proportionality_linear <-
       lm_data <- format(lm_data, digits=signif)
       lm_data <- tibble::rownames_to_column(lm_data)
       names(lm_data)[1] <- "Parameter"
-      lm_data[, !names(lm_data) %in% "Parameter"]
       
       # Rename parameters to intercept and slope
       if(any(str_detect(lm_data$Parameter, "\\(Intercept\\)"))){
