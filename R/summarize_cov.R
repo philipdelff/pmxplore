@@ -22,7 +22,7 @@ summarize_cov <- function(df, cov_vector, type = "Cont", ...){
     # Accept factor
     cov_subset <- df %>% dplyr::select(cov_vector)
     factors <- sapply(cov_subset, is.factor)
-    if(!all(factor)){ 
+    if(!all(factors)){ 
       stop("type 'Cat' is only applicable to factors")
     }
   }
