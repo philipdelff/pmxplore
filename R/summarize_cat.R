@@ -14,9 +14,9 @@ summarize_cat <- function(df, col_name, signif=3){
   sym_col_name <- rlang::sym(col_name)
 
   # test for factor  
-  column <- df[[expr_text(col_name)]]
+  column <- df[[expr_text(sym_col_name)]]
   if(!is.factor(column)){
-    stop(paste(expr_text(col_name), "is not a factor"))
+    stop(paste(expr_text(sym_col_name), "is not a factor"))
   }
   
   tab <- rlang::quo(df %>% 
