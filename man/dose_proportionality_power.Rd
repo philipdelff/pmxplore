@@ -5,7 +5,7 @@
 \title{Dose proportionality test (power model)}
 \usage{
 dose_proportionality_power(df, x, y, ci.level = 0.95, plot.par = F,
-  max_position = 1.1, min_tab_position = 1.05, min_text_position = 1,
+  max_position = 1.2, min_tab_position = 1.05, min_text_position = 0.9,
   signif = 3)
 }
 \arguments{
