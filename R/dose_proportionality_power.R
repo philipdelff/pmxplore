@@ -20,9 +20,9 @@
 dose_proportionality_power <- 
   function(df, x, y, ci.level=0.95, 
            plot.par=F, 
-           max_position = 1.1,
+           max_position = 1.2,
            min_tab_position = 1.05,
-           min_text_position = 1, 
+           min_text_position = 0.90, 
            signif=3){
     
     x <- rlang::enexpr(x)
@@ -42,7 +42,7 @@ dose_proportionality_power <-
       )
     )
     
-    # Do a power model lm fit
+    # Fit power model lm 
     lm_power_fit <- rlang::eval_tidy(
       rlang::quo(
         lm(formula=!!log_y~!!log_x, data=newdf)
@@ -50,8 +50,31 @@ dose_proportionality_power <-
     )
     lm_power_sum <- summary(lm_power_fit)
     
+    # find max and min values of x and y, log(x) and log(y)
+    x_max_log <- max(newdf[[log_x_name]], na.rm=T)
+    x_min_log <- min(newdf[[log_x_name]], na.rm=T)
+    
+    y_max <- max(newdf[[rlang::expr_text(y)]], na.rm=T)
+    y_min <- min(newdf[[rlang::expr_text(y)]], na.rm=T)
+    
+    x_max <- max(newdf[[rlang::expr_text(x)]], na.rm=T)
+    x_min <- min(newdf[[rlang::expr_text(x)]], na.rm=T)
+    
+    # predict values and back-transform
+    x_pred    <- data.frame(x=seq(x_min_log, x_max_log, length=100)) # improve. by as a par?
+    names(x_pred) <- log_x_name
+    predicted <- predict.lm(lm_power_fit, x_pred,
+                            se.fit=T, 
+                            interval=c("confidence"), 
+                            level=ci.level)
+    # put in data frame and back-tranform
+    pred_data <- data.frame(x = exp(x_pred[,1]), 
+                            y = exp(predicted$fit[,'fit']), 
+                            lwr = exp(predicted$fit[,'lwr']), 
+                            upr = exp(predicted$fit[,'upr']))
+
     # calculate critical region
-    x_ratio <- max(df[[rlang::expr_text(x)]], na.rm=T) / min(df[[rlang::expr_text(x)]], na.rm=T)
+    x_ratio <- x_max / x_min
     critial_region <- format(
       c( 1 + ( log(0.80)/log(x_ratio) ), 
          1 + ( log(1.25)/log(x_ratio) ) ),
@@ -82,26 +105,26 @@ dose_proportionality_power <-
                               signif(power_est - 1.96*power_sd, digits=signif), "-",
                               signif(power_est + 1.96*power_sd, digits=signif), "]")
     
-    
     # plot settings
-    y_max <- max(newdf[[log_y_name]], na.rm=T)
-    y_min <- min(newdf[[log_y_name]], na.rm=T)
     y_max_pos <- y_max*max_position
     y_text <- y_max*min_text_position
     y_min_tab <- y_max*min_tab_position
 
-    x_max <- max(newdf[[log_x_name]], na.rm=T)
-    x_min <- min(newdf[[log_x_name]], na.rm=T)
     x_diff <- (x_max - x_min) / 4
     x_min_pos <- x_min + x_diff
     x_max_pos <- x_max - x_diff
-    
+
     # plots without parameters
     if(!plot.par){
       p <- rlang::quo(
-        ggplot(newdf, aes(x=!!log_x, y=!!log_y)) + 
+        ggplot(newdf, aes(x=!!x, y=!!y)) + 
           geom_point() + 
-          geom_smooth(method="lm", se=T, level=ci.level) + 
+          # add predicted line (defaults from geom_smooth defaults)
+          geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
+                    color="#3366FF", size=1) +
+          # add se (defaults from geom_smooth defaults)
+          geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
+                      fill="grey60", alpha="0.4", inherit.aes=F) +
           coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
           labs(title="Power model") +
           # give CI of power estimate and critical region
@@ -113,13 +136,18 @@ dose_proportionality_power <-
     # plots with parameters
     if(plot.par){
       p <- rlang::quo(
-        ggplot(newdf, aes(x=!!log_x, y=!!log_y)) + 
+        ggplot(newdf, aes(x=!!x, y=!!y)) + 
           # add lm parameters (first layer to make sure not overplotting outliers)
           annotation_custom(gridExtra::tableGrob(lm_power_data, rows=NULL),
                             xmin=!!x_min_pos, xmax=!!x_max_pos,
                             ymin=!!y_min_tab, ymax=!!y_max_pos) + 
           geom_point() + 
-          geom_smooth(method="lm", se=T, level=ci.level) + 
+          # add predicted line (defaults from geom_smooth defaults)
+          geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
+                    color="#3366FF", size=1) +
+          # add se (defaults from geom_smooth defaults)
+          geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
+                      fill="grey60", alpha="0.4", inherit.aes=F) +
           coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
           labs(title="Power model") +
           # give CI of power estimate and critical region
