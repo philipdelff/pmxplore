@@ -29,9 +29,8 @@ ally_count <- function(data, mapping, counts="abs",
     }
     # to be updated with only the number
     p <- ggplot(data, mapping) +
-      geom_count(colour="#bdbdbd", shape=16) + 
-      scale_size_area() + guides(size = "none") +
-      stat_summary(fun.data=count_n, geom = "text", size=3) + 
+      geom_point(alpha=0) + # invisible layer to set the axes properly
+      stat_summary(fun.data=count_n, geom = "label", size=3) + 
       theme(axis.text.x = element_text(angle = angle, hjust=hjust_x),
             axis.text.y = element_text(angle = angle, vjust=vjust_y))
   } 
