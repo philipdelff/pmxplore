@@ -12,7 +12,7 @@
 #' @details counts: one of 'abs' or 'rel'. To be expanded.
 #' @rdname ally_count
 #' @export
-#' @import tidyverse
+#' @importFrom dplyr group_by mutate  
 ally_count <- function(data, mapping, counts="abs", 
                        angle = 35, hjust_x=1, vjust_y=0, ...){
 
