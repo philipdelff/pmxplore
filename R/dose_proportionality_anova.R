@@ -59,7 +59,8 @@ dose_proportionality_anova <-
           coord_cartesian(ylim = c(0,!!y_max)) + 
           geom_hline(aes(yintercept=median(!!y, na.rm=T)), linetype="dashed") + 
           annotate(geom="text", x=!!x_pos, y=!!y_max,
-                   label=paste0("p value = ", !!p_value," (ANOVA)"))
+                   label=paste0("p value = ", !!p_value," (ANOVA)")) +
+        labs(title="ANOVA")
       )
     }
     
@@ -99,7 +100,8 @@ dose_proportionality_anova <-
                             ymin=!!y_min_pos, ymax=!!y_max) + 
           geom_boxplot() + 
           coord_cartesian(ylim = c(0,!!y_max)) + 
-          geom_hline(aes(yintercept = median(!!y)), linetype="dashed") # median
+          geom_hline(aes(yintercept = median(!!y)), linetype="dashed") + # median
+          labs(title="ANOVA")
       )
     }
     return(list(plot = rlang::eval_tidy(p), summary = aov_sum, fit_object=aov_fit))
