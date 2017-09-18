@@ -1,4 +1,4 @@
-source("./tests/testthat/test_datasets/load_data.R")
+source("./tests/testthat/test_datasets/test-load_data.R")
 
 test_that("data spec file", {
   # expecting error not finding file 

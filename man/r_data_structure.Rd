@@ -2,31 +2,33 @@
 % Please edit documentation in R/r_data_structure.R
 \name{r_data_structure}
 \alias{r_data_structure}
-\title{create a datastructure?}
+\title{Sets up the datastructure}
 \usage{
-r_data_structure(.df, data_spec = "dataSpecificationFile.csv",
-  data_spec_dir = "./Scripts/Setup", nm_output = FALSE)
+r_data_structure(.df, data_spec = "./Scripts/Setup/dataSpecificationFile.csv",
+  nm_output = FALSE, ...)
 }
 \arguments{
 \item{.df}{data frame}
 
 \item{data_spec}{specification file, Default: 'dataSpecificationFile.csv'}
 
+\item{nm_output}{is the data frame a nonmem output data, Default: FALSE}
+
 \item{data_spec_dir}{path to data_spec, Default: './Scripts'}
 
-\item{nm_output}{is the data frame a nonmem output data, Default: FALSE}
+\item{additional}{arguments passed to nm_output_data}
 }
 \value{
 a data frame with structure according to data spec
 }
 \description{
-set up data from and object + specification file
+Set up data from and object + specification file
 
 The function reads in a .csv file with the data specifications 
 (also accepts the same as a already loaded data frame)
 The data spec will be delivered with the dataset if requested through QCP order form
-and should include the columns: Variable, Code, DeCode, Description, R Variable Type. 
-The description column may be changed if a different description is preferred
+and should include the columns: Variable.Name Label Code Decode Description R.Type
+(in that order)
 }
 \details{
 DETAILS
