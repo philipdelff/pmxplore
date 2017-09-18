@@ -1,4 +1,4 @@
-Variable Name,Label,Code,Decode,Description,R Type
+Variable,VarDescription,Label,De-code,Description,R Variable Type
 C,Excluded,c,Excluded,NA,Character
 NMSEQSID,Numeric sequential idenitifier,NA,NA,NA,Categorical
 OSID,Original subject identifier,NA,NA,NA,Categorical
@@ -40,3 +40,4 @@ BRENAL,baseline renal impariment status,3,Moderate (eGFR (mL/min/1.73m2) 30-59; 
 BHT,Baseline Height ,NA,NA,Body height ,Numeric
 BWT,Baseline body weight,NA,NA,Body weight,Numeric
 BBMI,Baseline body mass index,NA,NA,Baseline body mass index,Numeric
+COMMENT,Comment,NA,NA,Comment,Character
