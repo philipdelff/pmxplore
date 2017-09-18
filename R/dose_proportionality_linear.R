@@ -33,6 +33,14 @@ dose_proportionality_linear <-
     x <- rlang::enexpr(x)
     y <- rlang::enexpr(y)
     
+    # Check that x and y is in dataset
+    if(!rlang::expr_text(x) %in% names(df)){
+      stop(paste0(rlang::expr_text(x), " not found in dataset"))
+    }
+    if(!rlang::expr_text(y) %in% names(df)){
+      stop(paste0(rlang::expr_text(y), " not found in dataset"))
+    }
+    
     # 1. Add weights to be used in fit
     newdf <- 
       rlang::quo(df %>% 

@@ -28,6 +28,14 @@ dose_proportionality_power <-
     x <- rlang::enexpr(x)
     y <- rlang::enexpr(y)
     
+    # Check that x and y is in dataset
+    if(!rlang::expr_text(x) %in% names(df)){
+      stop(paste0(rlang::expr_text(x), " not found in dataset"))
+    }
+    if(!rlang::expr_text(y) %in% names(df)){
+      stop(paste0(rlang::expr_text(y), " not found in dataset"))
+    }
+    
     log_x_name <- paste0("log_", rlang::expr_text(x))
     log_y_name <- paste0("log_", rlang::expr_text(y))
     
