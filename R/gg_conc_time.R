@@ -31,6 +31,11 @@ gg_conc_time <-
     blq   <- rlang::enexpr(blq)
     lloq <- rlang::enexpr(lloq)
     
+    ## Check that grouping variables are present (not all are NAs)
+    if(all(is.na(df[[expr_text(color)]])) | all(is.na(df[[expr_text(grp)]])) ){
+      stop(paste0(expr_text(color)," or ", expr_text(grp), "is NA"))
+    }
+    
     # Dataset for lines (i.e., do not connect sparse occasions)
     rich <- rlang::quo(
       df %>% filter(!is.na(!!occ))) 
