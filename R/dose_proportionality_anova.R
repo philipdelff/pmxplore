@@ -19,7 +19,7 @@ dose_proportionality_anova <-
            signif=3){
     x <- rlang::enexpr(x)
     y <- rlang::enexpr(y)
-
+    
     # Check that x and y is in dataset
     if(!rlang::expr_text(x) %in% names(df)){
       stop(paste0(rlang::expr_text(x), " not found in dataset"))
@@ -104,4 +104,5 @@ dose_proportionality_anova <-
     }
     return(list(plot = rlang::eval_tidy(p), summary = aov_sum, fit_object=aov_fit))
   }
+
 # should we be using a continuous boxplot instead? 
