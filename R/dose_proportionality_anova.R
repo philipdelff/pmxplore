@@ -17,14 +17,22 @@
 dose_proportionality_anova <- 
   function(df, x, y, plot.par=F, max_position = 1.25, min_position = 0.85, 
            signif=3){
-    
-    # rlang
     x <- rlang::enexpr(x)
     y <- rlang::enexpr(y)
+
+    # Check that x and y is in dataset
+    if(!rlang::expr_text(x) %in% names(df)){
+      stop(paste0(rlang::expr_text(x), " not found in dataset"))
+    }
+    if(!rlang::expr_text(y) %in% names(df)){
+      stop(paste0(rlang::expr_text(y), " not found in dataset"))
+    }
     
+    # extract data   
     x_col <- df[[rlang::expr_text(x)]]
     y_col <- df[[rlang::expr_text(y)]]
     
+    # Warning for not factor
     if(!is.factor(x_col)){
       message(paste(rlang::expr_text(x), "must be categorical. The structure of", 
                     rlang::expr_text(x), "was therefore set to factor."))
