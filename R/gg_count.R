@@ -18,12 +18,14 @@ count_n <- function(x){
 #' @details counts: one of 'abs' or 'rel'. To be expanded.
 #' @rdname gg_count
 #' @export
-#' @import tidyverse
+#' @importFrom rlang enexpr quo eval_tidy
+#' @import ggplot2
+
 gg_count <- function(df, x, y, 
                      counts="abs", 
                      angle = 35, hjust_x=1, vjust_y=0, ...){
-  x <- enexpr(x)
-  y <- enexpr(y)
+  x <- rlang::enexpr(x)
+  y <- rlang::enexpr(y)
   
   x_col <- df[[expr_text(x)]]
   y_col <- df[[expr_text(y)]]

@@ -17,8 +17,6 @@
 #' @importFrom gridExtra tableGrob
 #' @importFrom rlang enexpr quo eval_tidy expr_text
 #' @importFrom tibble rownames_to_column
-#' @importFrom tibble rownames_to_column
-#' @import magrittr
 
 dose_proportionality_linear <- 
   function(df, x, y, ci.level=0.95, 

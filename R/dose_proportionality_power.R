@@ -15,7 +15,6 @@
 #' @importFrom gridExtra tableGrob
 #' @importFrom rlang enexpr expr_text sym eval_tidy quo
 #' @importFrom tibble rownames_to_column
-#' @import magrittr
 
 dose_proportionality_power <- 
   function(df, x, y, ci.level=0.95, 

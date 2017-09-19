@@ -6,8 +6,9 @@
 #' @details DETAILS
 #' @rdname summarize_cat
 #' @export 
-#' @importFrom rlang sym quo
-#' @import tidyverse
+#' @importFrom rlang sym quo expr_text
+#' @import dplyr
+
 summarize_cat <- function(df, col_name, signif=3){
   # this function doesn't make sense with regards to the whole category thing 
   # H: ok, not sure what you are refering to but it takes the levels of the factor. Let's discuss.
