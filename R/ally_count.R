@@ -13,7 +13,7 @@
 #' @rdname ally_count
 #' @export
 #' @importFrom dplyr group_by mutate  
-ally_count <- function(data, mapping, counts="abs", 
+ally_count <- function(data, mapping, counts="rel", 
                        angle = 35, hjust_x=1, vjust_y=0, ...){
 
   x_col <- data[[deparse(mapping$x)]]
