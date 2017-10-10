@@ -18,7 +18,7 @@ baselineData <-
 Wrapper functions outputting a ggplot object. Easy to add additional layers/labels *etc* after the call. 
 
 ```{r}
-gg_conc_time(data, x=Time, y=conc, color=Subject, occ=Subject) +
+gg_conc_time(data, x=Time, y=conc, color=Subject) +
   guides(colour="none", shape="none") + 
   labs(x="Concentration", y="Time")
 ```

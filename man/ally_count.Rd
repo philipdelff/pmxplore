@@ -4,7 +4,7 @@
 \alias{ally_count}
 \title{count plot for ggally}
 \usage{
-ally_count(data, mapping, counts = "abs", angle = 35, hjust_x = 1,
+ally_count(data, mapping, counts = "rel", angle = 35, hjust_x = 1,
   vjust_y = 0, ...)
 }
 \arguments{

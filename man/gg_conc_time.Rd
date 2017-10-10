@@ -2,11 +2,10 @@
 % Please edit documentation in R/gg_conc_time.R
 \name{gg_conc_time}
 \alias{gg_conc_time}
-\title{Concentration vs time plots}
+\title{Concentration vs time plot}
 \usage{
-gg_conc_time(df, y = DV, x = TAFD, color = ID, grp = ID.OCC,
-  occ = OCC, blq = BLQ, lloq = 1, lloq_col = "blue",
-  lloq_type = "dashed")
+gg_conc_time(df, y = DV, x = TAFD, color = ID, occ = NULL, blq = NULL,
+  lloq = NULL, lloq_col = "blue", lloq_type = "dashed")
 }
 \arguments{
 \item{df}{data frame}
@@ -15,19 +14,11 @@ gg_conc_time(df, y = DV, x = TAFD, color = ID, grp = ID.OCC,
 
 \item{x}{x variable, Default: TAFD}
 
-\item{color}{color variable passed to aes, should be factor, Default: ID}
+\item{color}{grouping variable passed to aes (=color), Default: ID}
 
-\item{grp}{grouping variable passed to aes, Default: ID.OCC}
+\item{occ}{name of occasion column. If not NULL used as grouping variable (see details), Default: NULL}
 
-\item{occ}{col name for occasion column, Default: OCC}
-
-\item{blq}{col name for blq flag column, Default: BLQ}
-
-\item{lloq}{lower limit of quantification value, Default: 1}
-
-\item{lloq_col}{color of lloq line, Default: "blue"}
-
-\item{lloq_type}{linetyp of lloq line, Default: "dashed"}
+\item{blq}{name of blq flag column, Default: NULL}
 }
 \value{
 ggplot object
@@ -36,6 +27,7 @@ ggplot object
 Conc time plots with stratification
 }
 \details{
-DETAILS
+If occ is provided, color and occ are combined using paste to create a new grouping variable for each occasion. 
+Lines only connect data from each unique color+occ group. Useful for time after dose graphics.
 }
 
