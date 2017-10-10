@@ -3,52 +3,95 @@
 #' @param df data frame
 #' @param y y variable, Default: DV
 #' @param x x variable, Default: TAFD
-#' @param color color variable passed to aes, should be factor, Default: ID
-#' @param grp grouping variable passed to aes, Default: ID.OCC
-#' @param occ col name for occasion column, Default: OCC
-#' @param blq col name for blq flag column, Default: BLQ
-#' @param lloq lower limit of quantification value, Default: 1
+#' @param color grouping variable (color) passed to aes. Preferably a factor, Default: ID
+#' @param occ col name for occasion column, used as grouping variable, see details, Default: NULL
+#' @param blq col name for blq flag column, Default: NULL
+#' @param lloq lower limit of quantification value, Default: NULL
 #' @param lloq_col color of lloq line, Default: "blue"
 #' @param lloq_type linetyp of lloq line, Default: "dashed"
 #' @return ggplot object
-#' @details DETAILS
+#' @details If occ is provided, color and occ are combined to create a grouping variable. 
+#' Lines only connect data from each unique color+occ group. Useful for time after dose graphics.
 #' @rdname gg_conc_time
 #' @export 
-#' @importFrom rlang enexpr quo
-#' @importFrom dplyr filter 
+#' @importFrom rlang enexpr quo expr_text
+#' @importFrom dplyr filter mutate
 #' @import ggplot2
 
 gg_conc_time <- 
-  function(df, y=DV, x=TAFD, color=ID, grp=ID.OCC, 
-           occ=OCC, blq=BLQ,
-           lloq=1, lloq_col="blue", lloq_type="dashed"){
+  function(df, y=DV, x=TAFD, color=ID, occ=NULL, blq=NULL,
+           lloq=NULL, lloq_col="blue", lloq_type="dashed"){
+    
     y     <- rlang::enexpr(y)
     x     <- rlang::enexpr(x)
-    color <- rlang::enexpr(color)   
-    grp   <- rlang::enexpr(grp)
+    color <- rlang::enexpr(color)
     
     occ   <- rlang::enexpr(occ)
     blq   <- rlang::enexpr(blq)
-    lloq <- rlang::enexpr(lloq)
     
-    ## Check that grouping variables are present (not all are NAs)
-    if(all(is.na(df[[expr_text(color)]])) | all(is.na(df[[expr_text(grp)]])) ){
-      stop(paste0(expr_text(color)," or ", expr_text(grp), "is NA"))
+    # Checks of data: present in dataset and not all NAs?
+
+    # Color is required:
+    if(is.null(color) ){
+      stop("Color variable is required")
+    }
+    if(! rlang::expr_text(color) %in% names(df)){
+      stop(paste0(rlang::expr_text(color), " not found in dataset."))
+    }
+    if(all(is.na(df[[rlang::expr_text(color)]]))){
+      stop(paste0("All entries of ", rlang:expr_text(color), " are NA."))
+    }
+
+    # Occ and blq are optional:
+    if(!is.null(occ)){
+      if(! rlang::expr_text(occ) %in% names(df)){
+        stop(paste0(rlang::expr_text(occ), " not present in dataset."))
+      }
+      
+      if(all(is.na(df[[rlang::expr_text(occ)]]))){
+        stop(paste0("All entries of ", rlang::expr_text(occ), " are NA."))
+      }
+    }
+    if(!is.null(blq)){
+      if(! rlang::expr_text(blq) %in% names(df)){
+        stop(paste0(rlang::expr_text(blq), " not present in dataset."))
+      }
+      
+      if(all(is.na(df[[rlang::expr_text(blq)]]))){
+        stop(paste0("All entries of ", rlang::expr_text(blq), " are NA."))
+      }
     }
     
-    # Dataset for lines (i.e., do not connect sparse occasions)
-    rich <- rlang::quo(
-      df %>% filter(!is.na(!!occ))) 
-    rich <- eval_tidy(rich)
+    # Dataset for geom_line (i.e., does not connect sparse occasions)
+    if(!is.null(occ)){
+      rich <- rlang::quo(df %>%  
+                           dplyr::filter(!is.na(!!occ)) %>% 
+                           dplyr::mutate(grp = factor(paste(!!color, !!occ, sep= "."))))
+      rich <- rlang::eval_tidy(rich)
+    }
+
+    # different point layers if blq flag or not
+    if(is.null(blq)){
+      point_layer <- rlang::quo(geom_point()) 
+    }else{
+      point_layer <- rlang::quo(geom_point(aes(shape=!!blq)))
+    }
     
-    p <- rlang::quo(
-      ggplot(data=df, aes(x= !!x, y= !!y, colour= !!color)) +
-        geom_point(aes(shape=!!blq)) +
-        
-        geom_line(data=rich, aes(x= !!x, y= !!y,
-                                 colour= !!color, group= !!grp), inherit.aes = F) +
-        
-        geom_hline(aes(yintercept = !!lloq), linetype=!!lloq_type, col=!!lloq_col) 
-    )
-    return(eval_tidy(p))
+    # Generate plot (with or without the grp variable for geom_line)
+    if(is.null(occ)){
+      p <- rlang::quo(
+        ggplot(data=df, aes(x= !!x, y= !!y , colour= !!color)) + 
+          rlang::eval_tidy(point_layer) + 
+          geom_line()
+      )
+    } else {
+      p <- rlang::quo(
+        ggplot(data=df, aes(x= !!x, y= !!y , colour= !!color)) + 
+          rlang::eval_tidy(point_layer) + 
+          geom_line(data=rich, 
+                    aes(x= !!x, y= !!y, 
+                        colour= !!color, group= grp), inherit.aes = F) 
+      )
+    }
+    return(rlang::eval_tidy(p))
   }
