@@ -1,20 +1,17 @@
-#' @title Concentration vs time plots
+#' @title Concentration vs time plot
 #' @description Conc time plots with stratification
 #' @param df data frame
 #' @param y y variable, Default: DV
 #' @param x x variable, Default: TAFD
-#' @param color grouping variable (color) passed to aes. Preferably a factor, Default: ID
-#' @param occ col name for occasion column, used as grouping variable, see details, Default: NULL
-#' @param blq col name for blq flag column, Default: NULL
-#' @param lloq lower limit of quantification value, Default: NULL
-#' @param lloq_col color of lloq line, Default: "blue"
-#' @param lloq_type linetyp of lloq line, Default: "dashed"
+#' @param color grouping variable passed to aes (=color), Default: ID
+#' @param occ name of occasion column. If not NULL used as grouping variable (see details), Default: NULL
+#' @param blq name of blq flag column, Default: NULL
 #' @return ggplot object
-#' @details If occ is provided, color and occ are combined to create a grouping variable. 
+#' @details If occ is provided, color and occ are combined using paste to create a new grouping variable for each occasion. 
 #' Lines only connect data from each unique color+occ group. Useful for time after dose graphics.
 #' @rdname gg_conc_time
 #' @export 
-#' @importFrom rlang enexpr quo expr_text
+#' @importFrom rlang enexpr quo expr_text eval_tidy
 #' @importFrom dplyr filter mutate
 #' @import ggplot2
 
