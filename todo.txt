@@ -1,0 +1,11 @@
+* Add testing of all functions
+
+* All plot functions should be able to take a missingFlag and exclude that from the plots/print them as NA/missing
+
+* generate azTheme
+
+* Follow up on variableList for data structure function - meeting scheduled for wednesday
+
+* What to do with the functions defined within nm templates: 
+    - executeUpdate
+    - cltFileUpdate
