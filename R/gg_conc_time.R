@@ -16,8 +16,7 @@
 #' @import ggplot2
 
 gg_conc_time <- 
-  function(df, y=DV, x=TAFD, color=ID, occ=NULL, blq=NULL,
-           lloq=NULL, lloq_col="blue", lloq_type="dashed"){
+  function(df, y=DV, x=TAFD, color=ID, occ=NULL, blq=NULL){
     
     y     <- rlang::enexpr(y)
     x     <- rlang::enexpr(x)
