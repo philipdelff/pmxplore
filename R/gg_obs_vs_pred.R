@@ -9,18 +9,19 @@
 #' @rdname gg_obs_vs_pred
 #' @export 
 #' @import ggplot2
+#' @importFrom rlang expr_text eval_tidy quo enexpr
 gg_obs_vs_pred <- function(df, y, x, blq = NULL, 
                            smooth_method="loess"){
-  x <- enexpr(x)
-  y <- enexpr(y)
-  blq <- enexpr(blq)
+  x <- rlang::enexpr(x)
+  y <- rlang::enexpr(y)
+  blq <- rlang::enexpr(blq)
   
-  x_col <- df[[expr_text(x)]]
-  y_col <- df[[expr_text(x)]]
+  x_col <- df[[rlang::expr_text(x)]]
+  y_col <- df[[rlang::expr_text(y)]]
   
   # Maxvalue for axes
   max_val <- max(c(x_col, y_col), na.rm=T)
-
+  
   if(is.null(expr_text(blq))){
     p <- 
       rlang::quo(ggplot(data=df, aes(x=!!x, y=!!y)) + 
@@ -39,5 +40,5 @@ gg_obs_vs_pred <- function(df, y, x, blq = NULL,
                    coord_cartesian(xlim=c(0, !!max_val), ylim=c(0, !!max_val))
       )
   }
-  return(eval_tidy(p))
+  return(rlang::eval_tidy(p))
 }
