@@ -18,13 +18,9 @@ gg_residuals <- function(df, y=CWRES, x=PRED,
   x <- enexpr(x)
 
   y_col <- df[[rlang::expr_text(y)]]
-  
+
   # Settings for axes
-  if(absolute){
-    ymax <- max(abs(y_col), na.rm=T)
-  } else {
-    ymax <- max(y_col, na.rm=T)
-  }
+  ymax <- max(abs(y_col), na.rm=T)
   
   p <- rlang::quo(
     ggplot(data=df, aes(x=!!x, y=!!y)) +
