@@ -1,11 +1,13 @@
 #' @title Individual concentration time plot
+#' @description Function requires model predictions. 
+#' For plots without predictions use gg_conc_time() and add facets
 #' @param df dataframe
-#' @param obs observed data column , Default: DV
-#' @param pred population prediction column, Default: PRED
-#' @param ipred individual prediction column, Default: IPRED
+#' @param obs observed data column, Default: DV
+#' @param pred population predictions, Default: PRED
+#' @param ipred individual predictions, Default: IPRED
 #' @param x x variable, Default: TAPD
 #' @param id id variable, Default: ID
-#' @param occ occasion column. If not NULL used as grouping variable (see details), Default: NULL
+#' @param occ occasion. If not NULL used as grouping variable (see details), Default: NULL
 #' @param facet_rows rows used in facet_wrap, Default: 3
 #' @param facet_scales scales used facet_wrap, Default: "free"
 #' @details If occ is provided, id and occ are combined using paste to create a new grouping variable for each occasion. 
