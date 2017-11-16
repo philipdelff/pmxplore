@@ -55,7 +55,7 @@ gg_conc_time_ind <- function(df, obs=DV, pred=PRED, ipred=IPRED, x=TAPD,
     }
     
     # warning if occ not a factor
-    if(!is.factor(occ)){
+    if(!is.factor(df[[rlang::expr_text(occ)]])){
       warning(paste(rlang::expr_text(occ), "is not a factor. Unexpected results may occur"))
     }
   }
