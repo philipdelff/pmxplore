@@ -4,8 +4,7 @@
 \alias{gg_conc_time}
 \title{Concentration vs time plot}
 \usage{
-gg_conc_time(df, y = DV, x = TAFD, color = ID, occ = NULL, blq = NULL,
-  lloq = NULL, lloq_col = "blue", lloq_type = "dashed")
+gg_conc_time(df, y = DV, x = TAFD, color = ID, occ = NULL, blq = NULL)
 }
 \arguments{
 \item{df}{data frame}
