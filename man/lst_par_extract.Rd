@@ -26,4 +26,3 @@ Extract model parameters from read.lst object to data frame
 \seealso{
 \code{\link[dplyr]{bind_rows}}
 }
-

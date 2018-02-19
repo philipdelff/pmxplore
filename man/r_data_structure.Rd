@@ -33,4 +33,3 @@ and should include the columns: Variable.Name Label Code Decode Description R.Ty
 \details{
 DETAILS
 }
-

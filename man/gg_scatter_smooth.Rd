@@ -21,4 +21,3 @@ ggplot object
 \description{
 scatter plot with smoother
 }
-

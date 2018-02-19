@@ -26,4 +26,3 @@ box plot with the x-axis spaced out as continous instead of categorical
 \details{
 x-axis is continous and then grouped, useful for dose-linearity graphics
 }
-

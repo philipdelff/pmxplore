@@ -18,4 +18,3 @@ forces a new page for grob objects to avoid printing all on the same page
 \seealso{
 \code{\link[grid]{grid.newpage}},\code{\link[grid]{grid.draw}}
 }
-

@@ -18,4 +18,3 @@ function to add regression equation and R2 to plot
 \details{
 copied and modified from:
 }
-

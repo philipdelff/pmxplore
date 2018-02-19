@@ -19,4 +19,3 @@ list with subsets of the data frame
 \description{
 splits data into list subsets for plotting
 }
-

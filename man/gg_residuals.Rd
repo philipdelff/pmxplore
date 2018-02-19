@@ -24,4 +24,3 @@ ggplot object
 \description{
 plot for residuals vs predictions or time
 }
-

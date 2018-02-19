@@ -25,4 +25,3 @@ ggplot object
 \description{
 gg observation vs pred
 }
-

@@ -24,4 +24,3 @@ dust object
 \description{
 Wrapper for pixiedust::dust with az specifications
 }
-
