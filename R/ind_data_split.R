@@ -7,8 +7,14 @@
 #' @rdname ind_data_split
 #' @export 
 #' @importFrom zoo na.locf
+
 ind_data_split <- function(df, n_per_page=12, id="ID"){
 
+  # Error message if dataset does not have any rows
+  if(nrow(df)==0){
+    stop('Cannot split an empty dataset')
+  }
+  
   # Define number of splits
   n_id <- length(unique(df[,id]))
   n_split <- ceiling(n_id/n_per_page)
