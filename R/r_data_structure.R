@@ -101,7 +101,7 @@ r_data_structure <- function(.df,
   # ------------------------------------------------------------------
   # Check that .df is a data.frame
   # ------------------------------------------------------------------
-  if(!is.data.frame(.df)){
+  if(!all(class(.df) == "data.frame")){
     message("Input dataset needs to be a data frame. /n as.data.frame has therefore been applied")
     .df <- as.data.frame(.df)
   }
