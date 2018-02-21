@@ -98,7 +98,14 @@ r_data_structure <- function(.df,
                                                  "dataVariablesSpecification.csv"),
                              nm_output=FALSE, 
                              ...){
-  
+  # ------------------------------------------------------------------
+  # Check that .df is a data.frame
+  # ------------------------------------------------------------------
+  if(!is.data.frame(.df)){
+    message("Input dataset needs to be a data frame. /n as.data.frame has therefore been applied")
+    .df <- as.data.frame(.df)
+  }
+    
   # ------------------------------------------------------------------
   # Checks for the specification file
   # ------------------------------------------------------------------
