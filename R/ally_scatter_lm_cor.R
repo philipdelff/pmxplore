@@ -24,9 +24,7 @@ ally_scatter_lm_cor <-
     
    # Calculate correlation only if there are values different from zero
    # (important for ETA corr plots)
-    if(all(x_col==0) | all(y_col==0)){
-      correlation <- 0
-    } else if (length(unique(x_col))==1 | length(unique(y_col))==1) {
+    if(length(unique(x_col))==1 | length(unique(y_col))==1) {
       correlation <- 0 
     } else {
       correlation <- cor(x_col, y_col, 
