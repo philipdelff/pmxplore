@@ -23,4 +23,3 @@ ggplot object (passed to ggally)
 \description{
 barchart to be used with ggally
 }
-

@@ -30,4 +30,3 @@ correlation plot to be used with ggally
 \seealso{
 \code{\link[vcd]{assocstats}}
 }
-

@@ -28,4 +28,3 @@ density function with or without overlaying distribution
 \details{
 DETAILS
 }
-

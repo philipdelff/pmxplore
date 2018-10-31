@@ -19,4 +19,3 @@ summary data frame
 \details{
 DETAILS
 }
-

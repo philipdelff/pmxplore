@@ -37,4 +37,3 @@ Population predictions: dashed lines and triangles,
 Individal predictions: lines and crosses, 
 Observed data: open circles.
 }
-

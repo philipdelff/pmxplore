@@ -27,4 +27,3 @@ wrapper for xpose vpc
 \seealso{
 \code{\link[xpose4]{xpose.VPC}}
 }
-

@@ -22,17 +22,23 @@ ally_scatter_lm_cor <-
     x_col <- data[[deparse(mapping$x)]]
     y_col <- data[[deparse(mapping$y)]]
     
+<<<<<<< HEAD
     # Calculate correlation only if there are values different from zero
     # (important for ETA corr plots)
     if(all(x_col==0) | all(y_col==0)){
       correlation <- 0
     } else if (length(unique(x_col))==1 | length(unique(y_col))==1) {
+=======
+   # Calculate correlation only if there are values different from zero
+   # (important for ETA corr plots)
+    if(length(unique(x_col))==1 | length(unique(y_col))==1) {
+>>>>>>> 3444b40130aed7536f06af845d3626c5d0e0e761
       correlation <- 0 
     } else {
       correlation <- cor(x_col, y_col, 
                          method=cor_method,
                          use=cor_use)
-    }
+   }
     
     # Set to red colour if more or less than threshold
     if(correlation <= -cor_threshold | correlation >= cor_threshold) {

@@ -29,4 +29,3 @@ Conc time plots with stratification
 If occ is provided, color and occ are combined using paste to create a new grouping variable for each occasion. 
 Lines only connect data from each unique color+occ group. Useful for time after dose graphics.
 }
-

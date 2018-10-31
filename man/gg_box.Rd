@@ -25,4 +25,3 @@ ggplot object
 \description{
 boxplot
 }
-

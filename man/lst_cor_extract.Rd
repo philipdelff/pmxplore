@@ -23,4 +23,3 @@ summarized data frame
 \description{
 Pairwise extraction of omega correlations read.lst object to data frame
 }
-

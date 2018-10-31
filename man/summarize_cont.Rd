@@ -24,4 +24,3 @@ summary dataframe
 \details{
 DETAILS
 }
-

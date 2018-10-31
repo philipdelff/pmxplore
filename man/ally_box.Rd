@@ -26,4 +26,3 @@ boxplot to be used with ggally
 \details{
 DETAILS
 }
-

@@ -32,4 +32,3 @@ list with plot, power lm summary and power lm fit
 \description{
 log(y)~log(y) lm fit to test for dose proportionality
 }
-
