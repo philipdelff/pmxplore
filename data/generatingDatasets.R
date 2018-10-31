@@ -1,12 +1,12 @@
-# # Script to generate included datasets 
-# # 
+# # Script to generate included datasets
+# #
 # #
 # 
 # # Data 1: theoph
 # theoph <- Theoph
 # 
-# theoph <- theoph %>% 
-#   mutate(Subject = as.character(Subject), 
+# theoph <- theoph %>%
+#   mutate(Subject = as.character(Subject),
 #          Subject = factor(Subject,
 #                           levels = sort(as.numeric(unique(Subject)))))
 # 
@@ -28,6 +28,9 @@
 # rm(theoph, theophConc, theophDose)
 # 
 # theopDataspecFile <- "theoph_dataSpec.csv"
+# 
+# 
+# 
 # 
 # # 2. Simulated dataset
 # simPK <- read.csv(file=file.path("./tests/testthat/test_datasets", "sim1.csv"),
