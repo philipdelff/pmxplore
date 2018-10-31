@@ -10,21 +10,25 @@ gg_conc_time_ind(df, obs = DV, pred = PRED, ipred = IPRED, x = TAPD,
 \arguments{
 \item{df}{dataframe}
 
-\item{obs}{observed data column , Default: DV}
+\item{obs}{observed data column, Default: DV}
 
-\item{pred}{population prediction column, Default: PRED}
+\item{pred}{population predictions, Default: PRED}
 
-\item{ipred}{individual prediction column, Default: IPRED}
+\item{ipred}{individual predictions, Default: IPRED}
 
 \item{x}{x variable, Default: TAPD}
 
 \item{id}{id variable, Default: ID}
 
-\item{occ}{occasion column. If not NULL used as grouping variable (see details), Default: NULL}
+\item{occ}{occasion. If not NULL used as grouping variable (see details), Default: NULL}
 
 \item{facet_rows}{rows used in facet_wrap, Default: 3}
 
 \item{facet_scales}{scales used facet_wrap, Default: "free"}
+}
+\description{
+Function requires model predictions. 
+For plots without predictions use gg_conc_time() and add facets
 }
 \details{
 If occ is provided, id and occ are combined using paste to create a new grouping variable for each occasion. 
