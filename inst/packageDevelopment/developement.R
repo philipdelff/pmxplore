@@ -7,6 +7,7 @@ library(roxygen2)
 makeOxygen()
 devtools::document()
 
+devtools::test()
 
 # use_vignette(vignetteName, pkg="../pmxplore")
 
