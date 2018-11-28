@@ -2,7 +2,8 @@
 # Uncomment the code below to re-generate/add data
 # Last modified: 2018-11-27
 
-library(tidyverse)
+library(magrittr)
+library(ggplot2)
 
 # ------------------------------------------------------------------
 #  Generate dataset to simulate from
@@ -11,8 +12,8 @@ library(tidyverse)
 # Baseline data
 nIDs <- 50
 
-covariates <- tibble(NMSEQSID = 1:nIDs) %>% 
-  mutate(
+covariates <- dplyr::tibble(NMSEQSID = 1:nIDs) %>% 
+  dplyr::mutate(
     # randomly generate demographics with some correlations
     SEXM = round(runif(nIDs, min = 0, max = 1)), 
     RACE = round(runif(nIDs, min = 1, max = 3)),
@@ -29,31 +30,31 @@ covariates <- tibble(NMSEQSID = 1:nIDs) %>%
     BCRCL = ifelse(SEXM==0, 0.85*BCRCL, BCRCL),
     # randomly generate study related variables
     STUDYID = round(runif(nIDs, min = 1, max = 2)), 
-    DOSE = 20) %>% 
-  select(-BCREA) %>% 
-  mutate_at(.vars = c("AGE","BWT", "BCRCL"), .funs = signif, digits=3)
+    DOSE = 200) %>% 
+  dplyr::select(-BCREA) %>% 
+  dplyr::mutate_at(.vars = c("AGE","BWT", "BCRCL"), .funs = signif, digits=3)
 
 # Times: profiles at Day 1 and Day 15
 times <- c(0,  # for dose record
-           c(0.5, 1, 3, 6, 8, 15, 23.9),              # Day 1
-           336 + c(-0.2, 0.5, 1, 3, 6, 8, 15, 23.9))  # Day 15
+           c(0.5, 1, 2, 3, 5, 10, 23.9),              # Day 1
+           336 + c(-0.2, 0.5, 1, 2, 3, 5, 10, 23.9))  # Day 15
 
 sampleTimes <- 
-  tibble(NMSEQSID = rep(1:nIDs, each = length(times))) %>% 
-  mutate(TIME = rep(times, nIDs), 
+  dplyr::tibble(NMSEQSID = rep(1:nIDs, each = length(times))) %>% 
+  dplyr::mutate(TIME = rep(times, nIDs), 
          DAY = rep(rep(c(1, 15), each = length(times)/2), nIDs), 
          OCC = rep(c(NA, rep(1, length(times)/2-1), NA, rep(2, length(times)/2-1)), nIDs), 
          TAPD = ifelse(DAY==1, TIME, TIME-336), 
          TAPD = ifelse(TAPD <0, 23.9, TAPD))  
 
-simData <- full_join(covariates, sampleTimes)
+simData <- dplyr::full_join(covariates, sampleTimes)
 rm(times, sampleTimes) 
 
 # -------------
 # Add needed nonmem columns  
 # -------------
 simData <- simData %>% 
-  mutate(
+  dplyr::mutate(
     C = vector("character", length = n()),
     # doses
     AMT  = ifelse(TIME == 0, DOSE, 0),
@@ -63,8 +64,8 @@ simData <- simData %>%
     CMT  = ifelse(AMT!=0, 1, 2),         # oral absorption
     DV   = ".", 
     BLQ  = 0) %>% 
-  arrange(NMSEQSID, TIME) %>% 
-  select(C, NMSEQSID, TIME, TAPD, DV, AMT, EVID, CMT, OCC, BLQ, DOSE, ADDL, II,
+  dplyr::arrange(NMSEQSID, TIME) %>% 
+  dplyr::select(C, NMSEQSID, TIME, TAPD, DV, AMT, EVID, CMT, OCC, BLQ, DOSE, ADDL, II,
          BWT, AGE, BCRCL, SEXM, RACE, STUDYID, DAY)
 
 # -------------
@@ -94,41 +95,43 @@ simDataIn <- read.csv(file=inFile, skip=1, header = T, sep = "", as.is = T)
 
 # Get rid of outputted zeros
 simDataIn <- simDataIn %>% 
-  mutate(C = "", 
+  dplyr::mutate(C = "", 
          DV = ifelse(EVID==1, NA, DV), 
          BLQ = ifelse(EVID==1, NA, BLQ),
          AMT = ifelse(EVID==0, ".", AMT), 
          OCC = ifelse(OCC==0, NA, OCC)) 
 
-# ggplot(simDataIn, aes(y=DV, x=TIME, group=NMSEQSID)) + geom_line()
+# ggplot2::ggplot(simDataIn, ggplot2::aes(y=DV, x=TIME, group=NMSEQSID)) +
+# ggplot2::geom_line() + coord_cartesian(xlim = c(0,40))
 # summary(simDataIn$DV, na.rm = T)
 
 # introduce a lloq: 
-LLOQ <- 0.005
+LLOQ <- 0.15
 simDataIn <- simDataIn %>% 
-  mutate(BLQ = ifelse(!is.na(DV) & DV < LLOQ & EVID==0, 1, 0), 
+  dplyr::mutate(BLQ = ifelse(!is.na(DV) & DV < LLOQ & EVID==0, 1, 0), 
          DV  = ifelse(!is.na(DV) & DV < LLOQ & EVID==0, NA, DV), 
          DV = signif(DV, digits = 4)) 
-  
+
 # Include with a pre-first dose record
 preDose <- simDataIn %>% 
-  filter(!duplicated(NMSEQSID)) %>% 
-  mutate(TIME = -0.2, 
-         TAPD = NA)
+  dplyr::filter(!duplicated(NMSEQSID)) %>% 
+  dplyr::mutate(TIME = -0.2, 
+         TAPD = NA, 
+         AMT = ".")
 
 simDataIn <- simDataIn %>% 
   rbind(preDose) %>% 
-  arrange(NMSEQSID, TIME)
+  dplyr::arrange(NMSEQSID, TIME)
 
 # Introduce a couple of missing covs
 simDataIn <- simDataIn %>% 
-  mutate(AGE = ifelse(NMSEQSID %in% c(5,25,50), -99, AGE), 
+  dplyr::mutate(AGE = ifelse(NMSEQSID %in% c(5,25,50), -99, AGE), 
          RACE = ifelse(NMSEQSID %in% c(8,36), -99, RACE))
 
 
 # Comments out some rows 
 simDataIn <- simDataIn %>% 
-  mutate(C = ifelse(TIME < 0 , "C", C), 
+  dplyr::mutate(C = ifelse(TIME < 0 , "C", C), 
          # add a comment field
          COMMENT = ifelse(TIME < 0, "Pre first dose sample", " "))
 
@@ -136,17 +139,19 @@ simDataIn <- simDataIn %>%
 commentRow <- round(runif(10, min=1, max=nrow(simDataIn)))
 
 simDataIn <- simDataIn %>% 
-  mutate(
+  dplyr::mutate(
     # only comment out samples & not already commented out
     C = ifelse(rownames(.) %in% commentRow & EVID == 0 & C !="C", "C", C), 
     # add a comment field
     COMMENT = ifelse(rownames(.) %in% commentRow & EVID == 0 & C =="C", 
                      "Randomly selected for illustration", COMMENT))
 
+pkData <- simDataIn 
 
 # ------------------------------------------------------------------
 #  Add as available dataset in package
 # ------------------------------------------------------------------
+# Write to file
+write.csv(pkData, file="simPKdata.csv", quote = F, row.names = F, na = ".")
 
-# # Write to file
-# write.csv(simDatIn, file="AZDTest_20170918.csv", quote = F, row.names = F, na = ".")
+use_data(pkData, pkg="../pmxplore")
