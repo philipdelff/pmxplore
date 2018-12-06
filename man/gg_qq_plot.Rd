@@ -19,4 +19,3 @@ ggplot object
 \description{
 qq plot
 }
-

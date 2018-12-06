@@ -9,3 +9,15 @@
 * What to do with the functions defined within nm templates: 
     - executeUpdate
     - cltFileUpdate
+    
+    
+    
+Add datasets:  
+
+Dataset with large range of dose groups to test the dose proportionality functions
+
+Dataset with more than 1 study
+
+NONMEM output file to use with r_data_staructure, nm=T
+
+If expanding to JSON: add dataspec example for that

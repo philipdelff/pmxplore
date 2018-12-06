@@ -2,26 +2,38 @@
 % Please edit documentation in R/gg_conc_time_ind.R
 \name{gg_conc_time_ind}
 \alias{gg_conc_time_ind}
-\title{create individual concentration time plot}
+\title{Individual concentration time plot}
 \usage{
 gg_conc_time_ind(df, obs = DV, pred = PRED, ipred = IPRED, x = TAPD,
-  id = ID, occ = OCC, facet_rows = 3, ...)
+  id = ID, occ = NULL, facet_rows = 3, facet_scales = "free", ...)
 }
 \arguments{
 \item{df}{dataframe}
 
-\item{obs}{name of observation column , Default: DV}
+\item{obs}{observed data column, Default: DV}
 
-\item{pred}{name of prediction column, Default: PRED}
+\item{pred}{population predictions, Default: PRED}
 
-\item{ipred}{name of individual prediction column, Default: IPRED}
+\item{ipred}{individual predictions, Default: IPRED}
 
-\item{x}{name of x variable, Default: TAPD}
+\item{x}{x variable, Default: TAPD}
 
-\item{id}{name of ID column, Default: ID}
+\item{id}{id variable, Default: ID}
 
-\item{occ}{name of OCC column, Default: OCC}
+\item{occ}{occasion. If not NULL used as grouping variable (see details), Default: NULL}
 
-\item{facet_rows}{number of rows to factet on, Default: 3}
+\item{facet_rows}{rows used in facet_wrap, Default: 3}
+
+\item{facet_scales}{scales used facet_wrap, Default: "free"}
 }
-
+\description{
+Function requires model predictions. 
+For plots without predictions use gg_conc_time() and add facets
+}
+\details{
+If occ is provided, id and occ are combined using paste to create a new grouping variable for each occasion. 
+Lines only connect data from each unique color+occ group. Useful for time after dose graphics.
+Population predictions: dashed lines and triangles,
+Individal predictions: lines and crosses, 
+Observed data: open circles.
+}

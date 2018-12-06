@@ -4,9 +4,8 @@
 \alias{dose_proportionality_power}
 \title{Dose proportionality test (power model)}
 \usage{
-dose_proportionality_power(df, x, y, ci.level = 0.95, plot.par = F,
-  max_position = 1.2, min_tab_position = 1.05, min_text_position = 0.9,
-  signif = 3)
+dose_proportionality_power(df, x, y, ci.level = 0.95, max_position = 1.2,
+  min_tab_position = 1.05, min_text_position = 0.9, signif = 3)
 }
 \arguments{
 \item{df}{data frame}
@@ -17,8 +16,6 @@ dose_proportionality_power(df, x, y, ci.level = 0.95, plot.par = F,
 
 \item{ci.level}{confidence level for lm fit in plot, Default: 0.95}
 
-\item{plot.par}{add table with fit parameters, Default: F}
-
 \item{max_position}{upper y limit passed to coord_carteesian (relative max(y)), Default: 1.1}
 
 \item{min_tab_position}{lower y-value for parameter table (relative max(y)), Default: 1.05}
@@ -26,6 +23,8 @@ dose_proportionality_power(df, x, y, ci.level = 0.95, plot.par = F,
 \item{min_text_position}{position of text string (relative max(y)), Default: 1}
 
 \item{signif}{number of significant numbers in parameter table, Default: 3}
+
+\item{plot.par}{add table with fit parameters, Default: F}
 }
 \value{
 list with plot, power lm summary and power lm fit
@@ -33,4 +32,3 @@ list with plot, power lm summary and power lm fit
 \description{
 log(y)~log(y) lm fit to test for dose proportionality
 }
-

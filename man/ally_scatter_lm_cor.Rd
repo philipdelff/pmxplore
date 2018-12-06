@@ -29,4 +29,3 @@ ggplot object (passed to ggally)
 \description{
 scatter plot with linear regression and correlation threshold to be used with ggally
 }
-

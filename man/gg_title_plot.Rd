@@ -17,4 +17,3 @@ ggplot object
 \description{
 Plot to serve as divider page for multiple plot pdfs
 }
-

@@ -78,10 +78,9 @@ nm_output_data <- function(.df, id="NMSEQSID",
 #' @title Sets up the datastructure
 #' @description Set up data from and object + specification file
 #' @param .df data frame
-#' @param data_spec specification file, Default: 'dataSpecificationFile.csv'
-#' @param data_spec_dir path to data_spec, Default: './Scripts'
+#' @param data_spec full path to specification file, Default: './SourceData/dataVariablesSpecification.csv'
 #' @param nm_output is the data frame a nonmem output data, Default: FALSE
-#' @param additional arguments passed to nm_output_data
+#' @param ... additional arguments passed to nm_output_data
 #' @description
 #' The function reads in a .csv file with the data specifications 
 #' (also accepts the same as a already loaded data frame)
@@ -93,10 +92,20 @@ nm_output_data <- function(.df, id="NMSEQSID",
 #' @export 
 #' @importFrom stringr str_detect
 #' @rdname r_data_structure
+
 r_data_structure <- function(.df, 
-                             data_spec="./Scripts/Setup/dataSpecificationFile.csv",
-                             nm_output=FALSE, ...){
-  
+                             data_spec=file.path("SourceData",
+                                                 "dataVariablesSpecification.csv"),
+                             nm_output=FALSE, 
+                             ...){
+  # ------------------------------------------------------------------
+  # Check that .df is a data.frame
+  # ------------------------------------------------------------------
+  if(!all(class(.df) == "data.frame")){
+    message("Input dataset needs to be a data frame. /n as.data.frame has therefore been applied")
+    .df <- as.data.frame(.df)
+  }
+    
   # ------------------------------------------------------------------
   # Checks for the specification file
   # ------------------------------------------------------------------
@@ -157,7 +166,7 @@ r_data_structure <- function(.df,
   }
   
   if(nm_output){
-    .df <- nm_output_data(df, ...)
+    .df <- nm_output_data(.df, ...)
   }
   
   # Issue warning for columns in dataset not defined in spec

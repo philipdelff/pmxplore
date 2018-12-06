@@ -1,28 +1,5 @@
-
-## Load datasets to be used for testing ##
-
-# 1. theoph
-theoph <- Theoph
-theoph$Subject <- as.character(theoph$Subject)
-theoph$Subject <- factor(theoph$Subject,
-                         levels = sort(as.numeric(unique(theoph$Subject))))
-# to nonmem structure
-theophConc <- theoph %>%
-  dplyr::mutate(AMT = as.numeric(NA),
-         EVID = as.numeric(0),
-         MDV = as.numeric(0))
-theophDose <- theophConc %>%
-  dplyr::filter(!duplicated(Subject)) %>%
-  dplyr::mutate(AMT = Dose,
-                EVID = 1,
-                MDV = 1)
-theophNM <- dplyr::full_join(theophDose, theophConc) %>%
-  dplyr::group_by(Subject) %>%
-  dplyr::arrange(Time, .by_group = TRUE)
-
-rm(theoph, theophConc, theophDose)
-
-theopDataspecFile <- "theoph_dataSpec.csv"
+# R script to generate datasets included in the package: 
+# Uncomment the code below to re-generate/add data
 
 # 2. Simulated dataset
 simPK <- read.csv(file=file.path("./tests/testthat/test_datasets", "sim1.csv"),

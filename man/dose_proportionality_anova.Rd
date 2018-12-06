@@ -31,4 +31,3 @@ Anova fit to test for dose proportionality
 \details{
 Table with parameters extend between min_position*max(y) and max_position*max(y)
 }
-

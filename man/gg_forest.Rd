@@ -25,4 +25,3 @@ ggplot object
 \description{
 forest plot for covariate-parameter impact
 }
-

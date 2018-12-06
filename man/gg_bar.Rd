@@ -20,4 +20,3 @@ gg_bar(df, x, numbers = F, angle = 40, hjust = 1)
 \value{
 ggplot object
 }
-

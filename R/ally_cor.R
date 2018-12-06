@@ -29,7 +29,7 @@ ally_cor <- function(data, mapping,
     
     # Calculate correlation only if there are values different from zero
     # (important for ETA corr plots)
-    if(all(x_col==0) | all(y_col==0)){
+    if(length(unique(x_col))==1 | length(unique(y_col))==1){
       correlation <- 0
       cor_df <- data.frame(
         pos_x = (max(x_col, na.rm = TRUE)-min(x_col, na.rm = TRUE))/2,

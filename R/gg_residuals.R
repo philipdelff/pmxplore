@@ -8,7 +8,7 @@
 #' @return ggplot object
 #' @rdname gg_residuals
 #' @export 
-#' @importFrom rlang quo
+#' @importFrom rlang quo expr_text eval_tidy
 #' @import ggplot2
 gg_residuals <- function(df, y=CWRES, x=PRED,
                          absolute=F,
@@ -17,8 +17,10 @@ gg_residuals <- function(df, y=CWRES, x=PRED,
   y <- enexpr(y)
   x <- enexpr(x)
 
+  y_col <- df[[rlang::expr_text(y)]]
+
   # Settings for axes
-  ymax <- max(df[[expr_text(y)]], na.rm=T)
+  ymax <- max(abs(y_col), na.rm=T)
   
   p <- rlang::quo(
     ggplot(data=df, aes(x=!!x, y=!!y)) +
@@ -39,6 +41,7 @@ gg_residuals <- function(df, y=CWRES, x=PRED,
     )
   }
   
-  return(eval_tidy(p))
+  return(rlang::eval_tidy(p))
   
 }
+

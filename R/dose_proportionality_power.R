@@ -18,7 +18,6 @@
 
 dose_proportionality_power <- 
   function(df, x, y, ci.level=0.95, 
-           plot.par=F, 
            max_position = 1.2,
            min_tab_position = 1.05,
            min_text_position = 0.90, 
@@ -121,48 +120,86 @@ dose_proportionality_power <-
     x_min_pos <- x_min + x_diff
     x_max_pos <- x_max - x_diff
 
-    # plots without parameters
-    if(!plot.par){
-      p <- rlang::quo(
-        ggplot(newdf, aes(x=!!x, y=!!y)) + 
-          geom_point() + 
-          # add predicted line (defaults from geom_smooth defaults)
-          geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
-                    color="#3366FF", size=1) +
-          # add se (defaults from geom_smooth defaults)
-          geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
-                      fill="grey60", alpha="0.4", inherit.aes=F) +
-          coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
-          labs(title="Power model") +
-          # give CI of power estimate and critical region
-          annotate(geom="text", x=!!x_min_pos, y=!!y_text, 
-                   label=paste(lm_power_string, critial_region_string, sep="\n"))
-      )
-    }
+    # plot.par=F, # improve, output both plots so that one can choose at a later stage
+    
+    # plots without parameters but w critical region
+    p_woparwCR <- rlang::quo(
+      ggplot(newdf, aes(x=!!x, y=!!y)) + 
+        geom_point() + 
+        # add predicted line (defaults from geom_smooth defaults)
+        geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
+                  color="#3366FF", size=1) +
+        # add se (defaults from geom_smooth defaults)
+        geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
+                    fill="grey60", alpha="0.4", inherit.aes=F) +
+        coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
+        labs(title="Power model") +
+        # give CI of power estimate and critical region
+        annotate(geom="text", x=!!x_min_pos, y=!!y_text, 
+                 label=paste(lm_power_string, critial_region_string, sep="\n"))
+    )
+
+    # plots without parameters or critical region
+    p_woparwoCR <- rlang::quo(
+      ggplot(newdf, aes(x=!!x, y=!!y)) + 
+        geom_point() + 
+        # add predicted line (defaults from geom_smooth defaults)
+        geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
+                  color="#3366FF", size=1) +
+        # add se (defaults from geom_smooth defaults)
+        geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
+                    fill="grey60", alpha="0.4", inherit.aes=F) +
+        coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
+        labs(title="Power model") +
+        # give CI of power estimate and critical region
+        annotate(geom="text", x=!!x_min_pos, y=!!y_text, 
+                 label=lm_power_string)
+    )
     
     # plots with parameters
-    if(plot.par){
-      p <- rlang::quo(
-        ggplot(newdf, aes(x=!!x, y=!!y)) + 
-          # add lm parameters (first layer to make sure not overplotting outliers)
-          annotation_custom(gridExtra::tableGrob(lm_power_data, rows=NULL),
-                            xmin=!!x_min_pos, xmax=!!x_max_pos,
-                            ymin=!!y_min_tab, ymax=!!y_max_pos) + 
-          geom_point() + 
-          # add predicted line (defaults from geom_smooth defaults)
-          geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
-                    color="#3366FF", size=1) +
-          # add se (defaults from geom_smooth defaults)
-          geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
-                      fill="grey60", alpha="0.4", inherit.aes=F) +
-          coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
-          labs(title="Power model") +
-          # give CI of power estimate and critical region
-          annotate(geom="text", x=!!x_min_pos, y=!!y_text, 
-                   label=critial_region_string)
-      )
-    }
-    return(list(plot = rlang::eval_tidy(p), 
-                summary=summary(lm_power_fit), 
-                fit=lm_power_fit))
+    p_wparwCR <- rlang::quo(
+      ggplot(newdf, aes(x=!!x, y=!!y)) + 
+        # add lm parameters (first layer to make sure not overplotting outliers)
+        annotation_custom(gridExtra::tableGrob(lm_power_data, rows=NULL),
+                          xmin=!!x_min_pos, xmax=!!x_max_pos,
+                          ymin=!!y_min_tab, ymax=!!y_max_pos) + 
+        geom_point() + 
+        # add predicted line (defaults from geom_smooth defaults)
+        geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
+                  color="#3366FF", size=1) +
+        # add se (defaults from geom_smooth defaults)
+        geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
+                    fill="grey60", alpha="0.4", inherit.aes=F) +
+        coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
+        labs(title="Power model") +
+        # give critical region
+        annotate(geom="text", x=!!x_min_pos, y=!!y_text, 
+                 label=critial_region_string)
+    )
+    
+    # plots with parameters
+    p_wparwoCR <- rlang::quo(
+      ggplot(newdf, aes(x=!!x, y=!!y)) + 
+        # add lm parameters (first layer to make sure not overplotting outliers)
+        annotation_custom(gridExtra::tableGrob(lm_power_data, rows=NULL),
+                          xmin=!!x_min_pos, xmax=!!x_max_pos,
+                          ymin=!!y_min_tab, ymax=!!y_max_pos) + 
+        geom_point() + 
+        # add predicted line (defaults from geom_smooth defaults)
+        geom_line(data = pred_data, aes(x=x, y=y), inherit.aes=F, 
+                  color="#3366FF", size=1) +
+        # add se (defaults from geom_smooth defaults)
+        geom_ribbon(data=pred_data, aes(x=x, ymin=lwr,ymax=upr), 
+                    fill="grey60", alpha="0.4", inherit.aes=F) +
+        coord_cartesian(ylim = c(y_min, !!y_max_pos)) + 
+        labs(title="Power model")
+    )
+    
+    return(list(summary=summary(lm_power_fit), 
+                fit=lm_power_fit, 
+                plot = rlang::eval_tidy(p_woparwoCR), 
+                plot_cr = rlang::eval_tidy(p_woparwCR), 
+                plot_par = rlang::eval_tidy(p_wparwoCR),
+                plot_par_cr = rlang::eval_tidy(p_wparwCR)) 
+                )
 }

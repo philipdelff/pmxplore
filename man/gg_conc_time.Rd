@@ -4,8 +4,7 @@
 \alias{gg_conc_time}
 \title{Concentration vs time plot}
 \usage{
-gg_conc_time(df, y = DV, x = TAFD, color = ID, occ = NULL, blq = NULL,
-  lloq = NULL, lloq_col = "blue", lloq_type = "dashed")
+gg_conc_time(df, y = DV, x = TAFD, color = ID, occ = NULL, blq = NULL)
 }
 \arguments{
 \item{df}{data frame}
@@ -30,4 +29,3 @@ Conc time plots with stratification
 If occ is provided, color and occ are combined using paste to create a new grouping variable for each occasion. 
 Lines only connect data from each unique color+occ group. Useful for time after dose graphics.
 }
-

@@ -4,19 +4,17 @@
 \alias{r_data_structure}
 \title{Sets up the datastructure}
 \usage{
-r_data_structure(.df, data_spec = "./Scripts/Setup/dataSpecificationFile.csv",
-  nm_output = FALSE, ...)
+r_data_structure(.df, data_spec = file.path("SourceData",
+  "dataVariablesSpecification.csv"), nm_output = FALSE, ...)
 }
 \arguments{
 \item{.df}{data frame}
 
-\item{data_spec}{specification file, Default: 'dataSpecificationFile.csv'}
+\item{data_spec}{full path to specification file, Default: './SourceData/dataVariablesSpecification.csv'}
 
 \item{nm_output}{is the data frame a nonmem output data, Default: FALSE}
 
-\item{data_spec_dir}{path to data_spec, Default: './Scripts'}
-
-\item{additional}{arguments passed to nm_output_data}
+\item{...}{additional arguments passed to nm_output_data}
 }
 \value{
 a data frame with structure according to data spec
@@ -33,4 +31,3 @@ and should include the columns: Variable.Name Label Code Decode Description R.Ty
 \details{
 DETAILS
 }
-

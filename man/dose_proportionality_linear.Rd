@@ -37,4 +37,3 @@ list with plot, lm summary and lm fit
 \description{
 lm fit to test for dose proportionality
 }
-

@@ -31,4 +31,3 @@ count plot to be used with ggally. To be used with categorical variables.
 \details{
 counts: one of 'abs' or 'rel'. To be expanded.
 }
-
