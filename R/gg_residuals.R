@@ -44,3 +44,4 @@ gg_residuals <- function(df, y=CWRES, x=PRED,
   return(rlang::eval_tidy(p))
   
 }
+

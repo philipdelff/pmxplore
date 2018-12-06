@@ -8,6 +8,8 @@
 #' @export 
 #' @importFrom zoo na.locf
 
+# needs to be updated to handle tibbles
+
 ind_data_split <- function(df, n_per_page=12, id="ID"){
 
   # Error message if dataset does not have any rows
